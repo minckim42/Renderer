@@ -17,8 +17,6 @@ class Window: public WindowGlfw
 
 
 
-
-
 int		main()
 {
 	WindowGlfw*		win = new Window();
