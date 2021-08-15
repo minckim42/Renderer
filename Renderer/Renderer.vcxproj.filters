@@ -15,22 +15,42 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="camera.hpp">
+    <ClCompile Include="Main.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowGlfw.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glad.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Camera.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="group.hpp">
+    <ClInclude Include="Common.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="model.hpp">
+    <ClInclude Include="Component.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="component.hpp">
+    <ClInclude Include="Group.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="shader_opengl.hpp">
+    <ClInclude Include="Model.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="window_glfw.hpp">
+    <ClInclude Include="Renderer.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderOpengl.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowGlfw.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
