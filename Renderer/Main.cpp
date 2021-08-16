@@ -20,36 +20,73 @@ class Window: public WindowGlfw
 };
 
 
+class test
+{
+	public:
+	
+	test(int x)
+	{
+		cout << "default: " << this << endl;
+	}
+	
+	test(const test& x)
+	{
+		cout << "const copy: " << this << endl;
+	}
+	
+	test(test& x)
+	{
+		cout << "copy: " << this << endl;
+	}
+	
+	test(const test&& x)
+	{
+		cout << "const move: " << this << endl;
+	}
+	
+	test(test&& x)
+	{
+		cout << "move: " << this << endl;
+	}
+
+	test&	operator=(test& x)
+	{
+		cout << "alloc: " << this << endl;
+		return *this;
+	}
+
+	test&	operator=(test&& x)
+	{
+		cout << "move alloc: " << this << endl;
+		return *this;
+	}
+
+	~test()
+	{
+		cout << "byebye" << endl;
+	}
+
+
+};
+
 
 int		main()
 {
+	test	t2(1);
+
+
 	WindowGlfw*		win = new Window();
 	win->init();
 	init_glad();
 	win->loop();
 	delete win;
 
-	glm::mat4	mmm(
-		1, 0, 0, 0, 
-		0, 1, 0, 0,
-		0, 0, 1, 0, 
-		2, 2, 2, 1 );
+	test	t3(test(1));
+	cout << &t2 << endl;
+	cout << &t3 << endl;
 
-	cout << glm::to_string(mmm) << endl;
+	t3 = test(2);
+	cout << &t3 << endl;
 
-	mmm = glm::rotate(mmm, 0.5f, vec3(0.0f, 0.0f, 1.0f));
-	cout << glm::to_string(mmm) << endl;
-
-	mat4	rot = rotate(0.1f, vec3(0, 0, 1));
-
-	cout << to_string(rot * mmm) << endl;
-
-	Object		a;
-	cout << to_string(a.matrix) << endl;
-	vec3 ve(0,0,1);
-	a.yaw(0.2);
-	a.yaw(0.2, ve);
-
-	cout << to_string(a.matrix) << endl;
 	return 0;
 }

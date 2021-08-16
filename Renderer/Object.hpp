@@ -1,3 +1,4 @@
+#pragma once
 #include <glm/glm.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/ext.hpp>
@@ -22,9 +23,14 @@ class Object
 	=======================================*/
 	/* constructor */	Object();
 	/* constructor */	Object(const glm::mat4& mat);
+	/* constructor */	Object(glm::vec3 position, glm::vec3 x,	glm::vec3 z); // z is prior to x
+	/* constructor */	Object(const Object& x) = default;
+	virtual				~Object() = default;
+	Object&				operator=(const Object& x) = default;
+	Object&				operator=(Object&& x);
 
 	/*=======================================
-		Public Methods
+		Methods
 	=======================================*/
 	
 	public:
@@ -37,6 +43,6 @@ class Object
 
 	glm::vec3			get_position() const;
 	glm::vec3			get_direction() const;
-	glm::vec3			get_right() const;
+	glm::vec3			get_left() const;
 	glm::vec3			get_up() const;
 };
