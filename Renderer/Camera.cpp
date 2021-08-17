@@ -24,7 +24,8 @@ z_far(10000),
 z_near(1),
 up(0, 0, 1)
 {
-
+	update_perspective();
+	update_view();
 }
 
 //------------------------------------------------------------------------------
@@ -32,11 +33,11 @@ up(0, 0, 1)
 Camera::Camera(
 	glm::vec3	position, 
 	glm::vec3	direction, 
-	glm::vec3	up = vec3(0,0,1), 
-	float		z_far = 10000, 
-	float		z_near = 1,
-	float		fovy = pi<float>() / 3, 
-	float		aspect = 16.f/9
+	glm::vec3	up,
+	float		z_far,
+	float		z_near,
+	float		fovy,
+	float		aspect
 ):
 Object(position, direction, up),
 fovy(fovy), 
@@ -44,7 +45,10 @@ aspect(aspect),
 z_far(z_far), 
 z_near(z_near),
 up(up)
-{}
+{
+	update_perspective();
+	update_view();
+}
 
 //------------------------------------------------------------------------------
 

@@ -47,7 +47,7 @@ class Material
 	std::string			name;
 
 	/*=========================================
-		Canonical form
+		Constructor & Destructor
 	=========================================*/
 	
 	public:

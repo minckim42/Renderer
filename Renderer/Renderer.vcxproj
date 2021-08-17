@@ -144,25 +144,31 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\glad.c" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Group.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="ObjLoader.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="ShaderOpengl.cpp" />
     <ClCompile Include="Material.cpp" />
+    <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="WindowGlfw.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.hpp" />
     <ClInclude Include="Common.hpp" />
-    <ClInclude Include="Component.hpp" />
     <ClInclude Include="Group.hpp" />
     <ClInclude Include="Light.hpp" />
-    <ClInclude Include="Model.hpp" />
+    <ClInclude Include="Mesh.hpp" />
     <ClInclude Include="Object.hpp" />
+    <ClInclude Include="ObjLoader.hpp" />
     <ClInclude Include="Renderer.hpp" />
     <ClInclude Include="ShaderOpengl.hpp" />
     <ClInclude Include="Material.hpp" />
+    <ClInclude Include="Vertex.hpp" />
     <ClInclude Include="WindowGlfw.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

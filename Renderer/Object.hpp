@@ -19,7 +19,7 @@ class Object
 	glm::mat4			matrix;
 
 	/*=======================================
-		Canonical form
+		Constructor & Destructor
 	=======================================*/
 	/* constructor */	Object();
 	/* constructor */	Object(const glm::mat4& mat);
@@ -45,4 +45,7 @@ class Object
 	glm::vec3			get_direction() const;
 	glm::vec3			get_left() const;
 	glm::vec3			get_up() const;
+
+	void				set_identity();
+	void				set_position(const glm::vec3& v);
 };

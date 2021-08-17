@@ -42,7 +42,7 @@ class WindowGlfw
 	GLFWwindow*			_share;
 
 	/*=========================================
-		Canonical froms
+		Constructor & Destructor
 	=========================================*/
 
 	public:

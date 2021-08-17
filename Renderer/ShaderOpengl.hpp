@@ -9,7 +9,7 @@
 
 /*##############################################################################
 
-	ShaderOpengl
+	Shader Opengl
 
 ##############################################################################*/
 
@@ -49,14 +49,16 @@ class ShaderOpengl
 	std::vector<GLuint>	shaders;
 
 	/*=======================================
-		Canonical form
+		Constructor & Destructor
 	=======================================*/
 	
 	public:
-	~ShaderOpengl();
+	ShaderOpengl()=default;
+
+	virtual				~ShaderOpengl();
 
 	/*=======================================
-		Public Methods
+		Methods
 	=======================================*/
 	
 	public:
@@ -69,7 +71,6 @@ class ShaderOpengl
 	void				set_uniform(const std::string& name, const glm::vec3& value);
 	void				set_uniform(const std::string& name, const glm::mat3& value, bool transpose = GL_FALSE);
 	void				set_uniform(const std::string& name, const glm::mat4& value, bool transpose = GL_FALSE);
-
 	
 	private:
 	void				check_shader(GLuint shader, shader_type);

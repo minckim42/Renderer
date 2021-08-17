@@ -97,14 +97,14 @@ void			ShaderOpengl::set_uniform(const string& name, const vec3& value)
 
 void			ShaderOpengl::set_uniform(const string& name, const mat3& value, bool transpose)
 {
-	glUniformMatrix3fv(glGetUniformLocation(program, name.c_str()), 1, GL_FALSE, value_ptr(value));
+	glUniformMatrix3fv(glGetUniformLocation(program, name.c_str()), 1, transpose, value_ptr(value));
 }
 
 //------------------------------------------------------------------------------
 
 void			ShaderOpengl::set_uniform(const string& name, const mat4& value, bool transpose)
 {
-	glUniformMatrix4fv(glGetUniformLocation(program, name.c_str()), 1, GL_FALSE, value_ptr(value));
+	glUniformMatrix4fv(glGetUniformLocation(program, name.c_str()), 1, transpose, value_ptr(value));
 }
 
 /*=========================================
