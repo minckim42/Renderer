@@ -34,6 +34,7 @@ enum class Material_format
 class Material
 {
 	typedef unsigned int	uint;
+	
 	/*=========================================
 		Members
 	=========================================*/
