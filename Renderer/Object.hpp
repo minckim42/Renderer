@@ -34,12 +34,14 @@ class Object
 	=======================================*/
 	
 	public:
-	Object&				move(const glm::vec3& v);
-	Object&				move_forward(float len);
-	Object&				move_left(float len);
-	Object&				move_up(float len);
-	Object&				pitch(float rad);
-	Object&				yaw(float rad, glm::vec3 up=glm::vec3(0,0,1));
+	virtual Object&		move(const glm::vec3& v);
+	virtual Object&		move_forward(float len);
+	virtual Object&		move_left(float len);
+	virtual Object&		move_up(float len);
+	virtual Object&		pitch(float rad);
+	virtual Object&		pitch(float rad, glm::vec3 up);
+	virtual Object&		yaw(float rad);
+	virtual Object&		yaw(float rad, glm::vec3 up);
 
 	glm::vec3			get_position() const;
 	glm::vec3			get_direction() const;

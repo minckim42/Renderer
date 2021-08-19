@@ -20,11 +20,11 @@ Object(
 ),
 fovy(pi<float>() / 3), 
 aspect(16.f/9), 
-z_far(10000), 
+z_far(2000), 
 z_near(1),
 up(0, 0, 1)
 {
-	update_perspective();
+	update_projection();
 	update_view();
 }
 
@@ -46,15 +46,15 @@ z_far(z_far),
 z_near(z_near),
 up(up)
 {
-	update_perspective();
+	update_projection();
 	update_view();
 }
 
 //------------------------------------------------------------------------------
 
-void			Camera::update_perspective()
+void			Camera::update_projection()
 {
-	perspective = ::perspective(fovy, aspect, z_near, z_far);
+	projection = ::perspective(fovy, aspect, z_near, z_far);
 }
 
 //------------------------------------------------------------------------------

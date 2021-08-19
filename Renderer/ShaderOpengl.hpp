@@ -49,11 +49,11 @@ class ShaderOpengl
 	std::vector<GLuint>	shaders;
 
 	/*=======================================
-		Constructor & Destructor
+		Constructor
 	=======================================*/
 	
 	public:
-	ShaderOpengl()=default;
+	ShaderOpengl();
 
 	virtual				~ShaderOpengl();
 

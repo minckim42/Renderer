@@ -4,8 +4,9 @@
 #include <map>
 #include <unordered_map>
 #include <map>
+#include <stb_image.h>
 #include "Material.hpp"
-#include "Group.hpp"
+#include "Model.hpp"
 
 /*##############################################################################
 
@@ -19,16 +20,24 @@ class ObjLoader
 	{
 		std::vector<glm::vec3>		positions;
 		std::vector<glm::vec3>		normals;
-		std::vector<glm::vec3>		tex_coords;
+		std::vector<glm::vec2>		tex_coords;
 		std::vector<unsigned int>	indices;
+		Material*					material;
 		std::string					name;
 	};
+
+	/*=========================================
+		Types
+	=========================================*/
+
+	public:
+	typedef std::unordered_map<std::string, Material>	MaterialContainer;
 
 	/*=========================================
 		Members
 	=========================================*/
 
-	public:
+	private:
 	std::string			directory;
 	std::string			line;
 	std::string			key;
@@ -36,21 +45,19 @@ class ObjLoader
 	std::ifstream		ifs;
 	std::stringstream	ss;
 
+	public:
+	std::list<GroupTmp>			list_tmp;
+	Model&						model;
+	MaterialContainer&			materials;
+
 	std::map<std::string, void (ObjLoader::*)()>	obj_key_map;
-	std::list<GroupTmp>								tmp;
-	std::vector<std::shared_ptr<Group>>&			container;
-	std::unordered_map<std::string, Material>&		materials;
 
 	/*=========================================
 		Constructor
 	=========================================*/
 
 	public:
-	ObjLoader(
-		const std::string& path, 
-		std::vector<std::shared_ptr<Group>>& container, 
-		std::unordered_map<std::string, Material>& materials
-	);
+	ObjLoader(const std::string& path, Model& model, MaterialContainer& materials);
 	
 	virtual			~ObjLoader()=default;
 
@@ -60,6 +67,7 @@ class ObjLoader
 
 	public:
 	void			init_obj_key_map();
+	void			reset_stream();
 	void			parse_g();
 	void			parse_v();
 	void			parse_vt();
@@ -78,7 +86,12 @@ class ObjLoader
 
 class MtlLoader
 {
+	/*=========================================
+		Types
+	=========================================*/
 
+	public:
+	typedef ObjLoader::MaterialContainer	MaterialContainer;
 
 	public:
 	std::string			directory;
@@ -88,16 +101,17 @@ class MtlLoader
 	std::ifstream		ifs;
 	std::stringstream	ss;
 
+	MaterialContainer&		materials;
+	Material*				back;
+	
 	std::map<std::string, void (MtlLoader::*)()>	mtl_key_map;
-	std::unordered_map<std::string, Material>&		container;
-	Material*										back;
 
 	/*=========================================
 		Constructor
 	=========================================*/
 
 	public:
-	MtlLoader(const std::string& path, std::unordered_map<std::string, Material>& container);
+	MtlLoader(const std::string& path, MaterialContainer& materials);
 
 	virtual			~MtlLoader()=default;
 
@@ -108,6 +122,7 @@ class MtlLoader
 	public:
 	void			init_mtl_key_map();
 	void			parse_newmtl();
+	void			reset_stream();
 	void			parse_ka();
 	void			parse_kd();
 	void			parse_ks();

@@ -20,7 +20,7 @@ class Camera : public Object
 	float				fovy;
 	float				aspect;
 	glm::vec3			up;
-	glm::mat4			perspective;
+	glm::mat4			projection;
 	glm::mat4			view;
 
 	/*=======================================
@@ -44,6 +44,6 @@ class Camera : public Object
 	=======================================*/
 
 	public:
-	void				update_perspective();
+	void				update_projection();
 	void				update_view();
 };

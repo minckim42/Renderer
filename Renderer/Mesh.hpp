@@ -20,35 +20,37 @@ class Mesh: public Object
 	=========================================*/
 	
 	public:
-	typedef unsigned int			uint;
-	typedef std::vector<glm::vec3>	vector_vec3;
-	typedef std::vector<glm::vec2>	vector_vec2;
-	typedef std::vector<uint>		vector_uint;
-	typedef std::shared_ptr<Mesh>	ptr_mesh;
+	typedef unsigned int				uint;
+	typedef std::vector<glm::vec3>		vector_vec3;
+	typedef std::vector<glm::vec2>		vector_vec2;
+	typedef std::vector<uint>			vector_uint;
+	// typedef std::shared_ptr<Material>	PtrMaterial;
 
 	/*=========================================
 		Members
 	=========================================*/
 
 	public:
-	std::vector<Vertex>			vertices;
-	std::vector<uint>			indices;
-	std::shared_ptr<Material>	material;
-	uint						vao;
-	uint						vbo;
-	uint						ebo;
+	std::vector<Vertex>		vertices;
+	std::vector<uint>		indices;
+	Material*				material;
+	uint					vao;
+	uint					vbo;
+	uint					ebo;
 
 	/*=========================================
-		Constructor & Destructor
+		Constructor
 	=========================================*/
 
 	public:
-				Mesh();
+				Mesh()=default;
 				Mesh(
 					vector_vec3& 		positions, 
 					vector_vec3& 		normals, 
 					vector_vec2& 		tex_coords,
-					std::vector<uint>&	indices
+					std::vector<uint>&	indices,
+					Material*			material
+
 				);
 				Mesh(
 					vector_vec3& 		positions, 
@@ -56,11 +58,15 @@ class Mesh: public Object
 					vector_vec2& 		tex_coords, 
 					vector_vec3& 		tangents, 
 					vector_vec3& 		bi_tangents,
-					std::vector<uint>&	indices
+					std::vector<uint>&	indices,
+					Material*			material
+
 				);
-				Mesh(const Mesh& x) = default;
-	virtual		~Mesh() = default;
+				Mesh(Mesh& x);
+				Mesh(Mesh&& x);
+	virtual		~Mesh();
 	Mesh&		operator=(const Mesh& x);
+	Mesh&		operator=(Mesh&& x);
 
 	/*=========================================
 		Methods
@@ -78,10 +84,11 @@ class Mesh: public Object
 					vector_vec3& 		tangents, 
 					vector_vec3& 		bi_tangents
 				);
-	void		set_tangent();
+	void		set_tangents();
+	void		set_vertex_tangent(uint a, uint b, uint c);
 	void		set_buffer();
 	void		draw(ShaderOpengl& shader, glm::mat4& world);
-
-	ptr_mesh	copy();	// deep copy
+	
+	std::pair<glm::vec3, glm::vec3>		get_bounding_box();
 };
 

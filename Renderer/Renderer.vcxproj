@@ -59,19 +59,19 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="x64.props" />
+    <Import Project="..\x64.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="x64.props" />
+    <Import Project="..\x64.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="x64.props" />
+    <Import Project="..\x64.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="x64.props" />
+    <Import Project="..\x64.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -145,7 +145,7 @@
   <ItemGroup>
     <ClCompile Include="..\glad.c" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Group.cpp" />
+    <ClCompile Include="Model.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -154,18 +154,20 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="ShaderOpengl.cpp" />
     <ClCompile Include="Material.cpp" />
+    <ClCompile Include="StbImage.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="WindowGlfw.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.hpp" />
     <ClInclude Include="Common.hpp" />
-    <ClInclude Include="Group.hpp" />
+    <ClInclude Include="Model.hpp" />
     <ClInclude Include="Light.hpp" />
     <ClInclude Include="Mesh.hpp" />
     <ClInclude Include="Object.hpp" />
     <ClInclude Include="ObjLoader.hpp" />
     <ClInclude Include="Renderer.hpp" />
+    <ClInclude Include="RendererBase.hpp" />
     <ClInclude Include="ShaderOpengl.hpp" />
     <ClInclude Include="Material.hpp" />
     <ClInclude Include="Vertex.hpp" />

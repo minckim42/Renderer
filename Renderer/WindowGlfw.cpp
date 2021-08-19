@@ -150,33 +150,34 @@ void				WindowGlfw::check_init(const char* function) const
 
 //------------------------------------------------------------------------------
 
-void				WindowGlfw::prepare()
-{}
+// void				WindowGlfw::prepare()
+// {}
 
 //------------------------------------------------------------------------------
 
-bool				WindowGlfw::work()
-{
-	return true;
-}
+// bool				WindowGlfw::work()
+// {
+// 	return true;
+// }
 
 //------------------------------------------------------------------------------
 
 void				WindowGlfw::loop()
 {
-	prepare();
-	while (!glfwWindowShouldClose(_window) && work())
+	glfwSetFramebufferSizeCallback(_window, frame_resize);
+	renderer->prepare();
+	while (!glfwWindowShouldClose(_window) && renderer->loop())
 	{
 		glfwSwapBuffers(_window);
 		glfwPollEvents();
 	}
-	terminate();
+	renderer->terminate();
 }
 
 //------------------------------------------------------------------------------
 
-void				WindowGlfw::terminate()
-{}
+// void				WindowGlfw::terminate()
+// {}
 
 //------------------------------------------------------------------------------
 
@@ -186,3 +187,7 @@ void			init_glad()
 		throw string("GLAD: Failed to initialize GLAD");
 }
 
+void			frame_resize(GLFWwindow* window, int width, int height)
+{
+	glViewport(0, 0, width, height);
+}

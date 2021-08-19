@@ -1,6 +1,7 @@
 #include "Object.hpp"
-
+#include <iostream>
 using namespace glm;
+using namespace std;
 
 /*##############################################################################
 
@@ -71,7 +72,37 @@ Object&			Object::move_up(float len)
 
 Object&			Object::pitch(float rad)
 {
-	rotate(matrix, -rad, get_left());
+	vec3	position = get_position();
+	set_position(vec3(0, 0, 0));
+	matrix = rotate(-rad, get_left()) * matrix;
+	set_position(position);
+	return *this;
+}
+
+//------------------------------------------------------------------------------
+
+Object&			Object::pitch(float rad, vec3 up)
+{
+	vec3		axis = cross(up, get_direction());
+	if (axis == vec3(0, 0, 0))
+	{
+		axis = get_left();
+	}
+	vec3	position = get_position();
+	set_position(vec3(0, 0, 0));
+	matrix = rotate(-rad, axis) * matrix;
+	set_position(position);
+	return *this;
+}
+
+//------------------------------------------------------------------------------
+
+Object&			Object::yaw(float rad)
+{
+	vec3	position = get_position();
+	set_position(vec3(0, 0, 0));
+	matrix = rotate(rad, get_up()) * matrix;
+	set_position(position);
 	return *this;
 }
 
@@ -79,7 +110,10 @@ Object&			Object::pitch(float rad)
 
 Object&			Object::yaw(float rad, vec3 up)
 {
-	matrix = rotate(matrix, rad, up);
+	vec3	position = get_position();
+	set_position(vec3(0, 0, 0));
+	matrix = rotate(rad, up) * matrix;
+	set_position(position);
 	return *this;
 }
 

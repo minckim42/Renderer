@@ -1,4 +1,5 @@
 #include "WindowGlfw.hpp"
+#include "Renderer.hpp"
 #include "Object.hpp"
 #include <iostream>
 #include <glm/glm.hpp>
@@ -7,86 +8,49 @@
 using namespace std;
 using namespace glm;
 
-class Window: public WindowGlfw
-{
-	public:
-	bool	work()
-	{
-		// cout << "hi\n";
-		return true;
-	}
-	~Window()
-	{};
-};
-
-
-class test
-{
-	public:
-	
-	test(int x)
-	{
-		cout << "default: " << this << endl;
-	}
-	
-	test(const test& x)
-	{
-		cout << "const copy: " << this << endl;
-	}
-	
-	test(test& x)
-	{
-		cout << "copy: " << this << endl;
-	}
-	
-	test(const test&& x)
-	{
-		cout << "const move: " << this << endl;
-	}
-	
-	test(test&& x)
-	{
-		cout << "move: " << this << endl;
-	}
-
-	test&	operator=(test& x)
-	{
-		cout << "alloc: " << this << endl;
-		return *this;
-	}
-
-	test&	operator=(test&& x)
-	{
-		cout << "move alloc: " << this << endl;
-		return *this;
-	}
-
-	~test()
-	{
-		cout << "byebye" << endl;
-	}
-
-
-};
-
+//#define BOX
+#define SONA
 
 int		main()
 {
-	test	t2(1);
+	try
+	{
+		WindowGlfw	window(1920, 1080, "test");
+		Renderer	renderer;
+		window.init();
+		init_glad();
+		Material::init_default_texture();
+		Material::init_default_texture_normal();
 
+		window.renderer = &renderer;
+		renderer.window = window.get_window();
 
-	WindowGlfw*		win = new Window();
-	win->init();
-	init_glad();
-	win->loop();
-	delete win;
+		renderer.shader.compile_shader("shader_vertex.glsl", shader_type::vertex);
+		renderer.shader.compile_shader("shader_fragment.glsl", shader_type::fragment);
+		renderer.shader.link_shader_program();
 
-	test	t3(test(1));
-	cout << &t2 << endl;
-	cout << &t3 << endl;
+		renderer.light.set_position(vec3(5000, 5000, 5000));
+		renderer.light.strength = 80000;
 
-	t3 = test(2);
-	cout << &t3 << endl;
+		#ifdef BOX
+		renderer.add_file("./box/box.obj", model_format::obj);
+		#endif
+
+		#ifdef SONA
+		renderer.add_file("./sona/cloth.obj", model_format::obj);
+		renderer.add_file("./sona/skin.obj", model_format::obj);
+		renderer.add_file("./sona/hair.obj", model_format::obj);
+		renderer.add_file("./sona/weapon.obj", model_format::obj);
+		#endif
+
+		window.loop();
+	}
+	catch(const string& e)
+	{
+		std::cerr << e << '\n';
+	}
+	
+
 
 	return 0;
 }

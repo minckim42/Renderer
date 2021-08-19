@@ -59,6 +59,13 @@
 		"xlocmon": "cpp",
 		"xlocnum": "cpp",
 		"xloctime": "cpp",
-		"xtree": "cpp"
+		"xtree": "cpp",
+		"array": "cpp",
+		"charconv": "cpp",
+		"chrono": "cpp",
+		"format": "cpp",
+		"forward_list": "cpp",
+		"optional": "cpp",
+		"ratio": "cpp"
 	}
 }

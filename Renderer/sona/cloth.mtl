@@ -1,0 +1,10 @@
+# Rhino
+newmtl cloth
+Ka	0.5000	0.5000	0.5000
+Kd	1.2000	1.2000	1.2000
+Ks	0.3000	0.3000	0.3000
+Tf	0.0000	0.0000	0.0000
+d 1.0000
+Ns 0.0000
+map_Kd cloth.png
+map_Bump cloth_bump.png

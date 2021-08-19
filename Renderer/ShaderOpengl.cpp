@@ -6,12 +6,19 @@ using namespace std;
 using namespace glm;
 
 /*=========================================
-	Canonical form
+	Constructor
 =========================================*/
+
+ShaderOpengl::ShaderOpengl():
+	program(0)
+{
+	
+}
 
 ShaderOpengl::~ShaderOpengl()
 {
-	glDeleteProgram(program);
+	if (program)
+		glDeleteProgram(program);
 }
 
 /*=========================================

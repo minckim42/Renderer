@@ -3,9 +3,12 @@
 #include <GLFW/glfw3.h>
 #include <string>
 #include "common.hpp"
+#include "RendererBase.hpp"
 
 /*##############################################################################
+
 	WindowGlfw
+
 ##############################################################################*/
 
 /*=========================================
@@ -22,12 +25,9 @@ class WindowGlfw
 	/*=========================================
 		Types
 	=========================================*/
+
 	private:
 	typedef unsigned int		uint;
-
-
-	public:
-
 
 	/*=========================================
 		Members
@@ -40,6 +40,9 @@ class WindowGlfw
 	int					_height;
 	GLFWmonitor*		_monitor;
 	GLFWwindow*			_share;
+
+	public:
+	RendererBase*		renderer;
 
 	/*=========================================
 		Constructor & Destructor
@@ -83,10 +86,10 @@ class WindowGlfw
 	void				check_init(const char* function) const;
 
 	public:
-	virtual void		prepare();
+	// virtual void		prepare();
 	virtual void		loop();
-	virtual bool		work();
-	virtual void		terminate();
+	// virtual bool		work();
+	// virtual void		terminate();
 };
 
 /*=========================================
@@ -94,3 +97,4 @@ class WindowGlfw
 =========================================*/
 
 void					init_glad();
+void					frame_resize(GLFWwindow* window, int width, int height);

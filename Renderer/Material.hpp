@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <glm/glm.hpp>
+#include <glad/glad.h>
 
 
 /*##############################################################################
@@ -38,7 +39,8 @@ class Material
 	/*=========================================
 		Members
 	=========================================*/
-	public:
+	
+public:
 	Material_param		param;
 	uint				map_ka;
 	uint				map_kd;
@@ -47,14 +49,20 @@ class Material
 	uint				illum;
 	std::string			name;
 
+	static uint			default_texture;
+	static uint			default_texture_normal;
+
 	/*=========================================
 		Constructor & Destructor
 	=========================================*/
 	
 	public:
-						Material() = default;
+						Material();
 						Material(const std::string& name);
 						Material(const Material& x) = default;
 	virtual				~Material() = default;
 	Material&			operator=(const Material& x) = default;
+
+	static uint			init_default_texture();
+	static uint			init_default_texture_normal();
 };

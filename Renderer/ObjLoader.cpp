@@ -9,8 +9,8 @@ using namespace glm;
 
 ##############################################################################*/
 
-ObjLoader::ObjLoader(const string& path, vector<shared_ptr<Group>>& container, unordered_map<string, Material>& materials):
-	container(container),
+ObjLoader::ObjLoader(const string& path, Model& model, MaterialContainer& materials):
+	model(model),
 	materials(materials),
 	ifs(path)
 {
@@ -18,22 +18,28 @@ ObjLoader::ObjLoader(const string& path, vector<shared_ptr<Group>>& container, u
 		throw string("Failed to open file: ") + path;
 
 	directory = path.substr(0, path.find_last_of('/'));
-	
+
+	init_obj_key_map();
+
 	while (ifs.good())
 	{
 		getline(ifs, line);
 		ss.str(line);
 		ss >> key;
-		if (obj_key_map.find(key) == obj_key_map.end())
+		if (key.empty() || obj_key_map.find(key) == obj_key_map.end())
 		{
-			cout << "obj loader: Unknown key: " << key << endl;
+			if (!key.empty())
+				cout << "obj loader: Unknown key: [" << key << "]\n";
+			reset_stream();
+			continue;
 		}
 		(this->*obj_key_map[key])();
-		line.clear();
-		key.clear();
-		value.clear();
-		ss.str("");
-		ss.clear();
+		reset_stream();
+	}
+
+	for (GroupTmp& tmp: list_tmp)
+	{
+		model.add_child(Mesh(tmp.positions, tmp.normals, tmp.tex_coords, tmp.indices, tmp.material));
 	}
 }
 
@@ -42,6 +48,7 @@ ObjLoader::ObjLoader(const string& path, vector<shared_ptr<Group>>& container, u
 void		ObjLoader::init_obj_key_map()
 {
 	obj_key_map["g"] = &ObjLoader::parse_g;
+	obj_key_map["o"] = &ObjLoader::parse_g;
 	obj_key_map["v"] = &ObjLoader::parse_v;
 	obj_key_map["vt"] = &ObjLoader::parse_vt;
 	obj_key_map["vn"] = &ObjLoader::parse_vn;
@@ -53,32 +60,43 @@ void		ObjLoader::init_obj_key_map()
 
 //------------------------------------------------------------------------------
 
+void			ObjLoader::reset_stream()
+{
+	line.clear();
+	key.clear();
+	value.clear();
+	ss.str("");
+	ss.clear();
+}
+
+//------------------------------------------------------------------------------
+
 void			ObjLoader::parse_g()
 {
 	ss >> value;
-	tmp.emplace_back();
-	tmp.back().name = value;
+	list_tmp.emplace_back();
+	list_tmp.back().name = value;
 }
 
 //------------------------------------------------------------------------------
 
 void			ObjLoader::parse_v()
 {
-	put_coord(ss, tmp.back().positions);
+	put_coord(ss, list_tmp.back().positions);
 }
 
 //------------------------------------------------------------------------------
 
 void			ObjLoader::parse_vt()
 {
-	put_coord(ss, tmp.back().tex_coords);
+	put_coord(ss, list_tmp.back().tex_coords);
 }
 
 //------------------------------------------------------------------------------
 
 void			ObjLoader::parse_vn()
 {
-	put_coord(ss, tmp.back().normals);
+	put_coord(ss, list_tmp.back().normals);
 }
 
 //------------------------------------------------------------------------------
@@ -93,7 +111,7 @@ void			ObjLoader::parse_f()
 		stringstream	base_stream(base);
 		base_stream >> idx[i];
 		base.clear();
-		tmp.back().indices.emplace_back(idx[i] - 1);
+		list_tmp.back().indices.emplace_back(idx[i] - 1);
 	}
 }
 
@@ -101,7 +119,12 @@ void			ObjLoader::parse_f()
 
 void			ObjLoader::parse_usemtl()
 {
-	ss >> tmp.back().name;
+	ss >> value;
+	if (materials.find(value) == materials.end())
+	{
+		cout << "Material not fount: " << value << endl;
+	}
+	list_tmp.back().material = &materials[value];
 }
 
 //------------------------------------------------------------------------------
@@ -123,23 +146,28 @@ void			ObjLoader::parse_comment()
 
 ##############################################################################*/
 
-MtlLoader::MtlLoader(const string& path, std::unordered_map<std::string, Material>& container):
+MtlLoader::MtlLoader(const string& path, std::unordered_map<std::string, Material>& materials):
 	ifs(path),
-	container(container)
+	materials(materials)
 {
 	if (!ifs)
 		throw string("Failed to open file: ") + path;
 
 	directory = path.substr(0, path.find_last_of('/'));
 	
+	init_mtl_key_map();
+
 	while (ifs.good())
 	{
 		getline(ifs, line);
 		ss.str(line);
 		ss >> key;
-		if (mtl_key_map.find(key) == mtl_key_map.end())
+		if (key.empty() || mtl_key_map.find(key) == mtl_key_map.end())
 		{
-			cout << "obj loader: Unknown key: " << key << endl;
+			if (!key.empty())
+				cout << "mtl loader: Unknown key: [" << key << "]\n";
+			key.clear();
+			continue;
 		}
 		(this->*mtl_key_map[key])();
 		line.clear();
@@ -166,20 +194,32 @@ void		MtlLoader::init_mtl_key_map()
 	mtl_key_map["map_Ka"] = &MtlLoader::parse_map_ka;
 	mtl_key_map["map_Kd"] = &MtlLoader::parse_map_kd;
 	mtl_key_map["map_Ks"] = &MtlLoader::parse_map_ks;
-	mtl_key_map["map_bump"] = &MtlLoader::parse_map_bump;
+	mtl_key_map["map_Bump"] = &MtlLoader::parse_map_bump;
 	mtl_key_map["bump"] = &MtlLoader::parse_bump;
 	mtl_key_map["illum"] = &MtlLoader::parse_illum;
 	mtl_key_map["#"] = &MtlLoader::parse_comment;
 }
 
 //------------------------------------------------------------------------------
+
+void			MtlLoader::reset_stream()
+{
+	line.clear();
+	key.clear();
+	value.clear();
+	ss.str("");
+	ss.clear();
+}
+
+//------------------------------------------------------------------------------
+
 void			MtlLoader::parse_newmtl()
 {
 	ss >> value;
-	if (container.find(value) != container.end())
+	if (materials.find(value) != materials.end())
 		return;
-	container[value] = Material(value);
-	back = &container[value];
+	materials[value] = Material(value);
+	back = &materials[value];
 }
 
 //------------------------------------------------------------------------------
@@ -306,6 +346,8 @@ void				put_coord(istream& is, vector<vec3>& container)
 	container.emplace_back(v[0], -v[2], v[1]);
 }
 
+//------------------------------------------------------------------------------
+
 void				put_coord(istream& is, vector<vec2>& container)
 {
 	vec2	v;
@@ -313,19 +355,58 @@ void				put_coord(istream& is, vector<vec2>& container)
 	container.emplace_back(v);
 }
 
+//------------------------------------------------------------------------------
+
 void				put_coord(std::istream& is, glm::vec3& target)
 {
 	is >> target[0] >> target[1] >> target[2];
 }
+
+//------------------------------------------------------------------------------
 
 void				put_coord(std::istream& is, glm::vec2& target)
 {
 	is >> target[0] >> target[1];
 }
 
+//------------------------------------------------------------------------------
 
 unsigned int		image_loader(const std::string& path)
 {
-	return 0;
+	unsigned int	image_id;
+
+	glGenTextures(1, &image_id);
+	glBindTexture(GL_TEXTURE_2D, image_id);
+	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	
+	stbi_set_flip_vertically_on_load(true);
+
+	int				width, height, nr_channel;
+	unsigned char*	data = stbi_load(path.c_str(), &width, &height, &nr_channel, 0);
+
+	if (!data)
+	{
+		throw string("Failed to load image file: ") + path;
+	}
+	unsigned int	format[5] = {0, GL_RED, 0, GL_RGB, GL_RGBA};
+	glTexImage2D(
+		GL_TEXTURE_2D, 
+		0, 
+		format[nr_channel], 
+		width, 
+		height, 
+		0, 
+		format[nr_channel], 
+		GL_UNSIGNED_BYTE, 
+		data
+	);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	stbi_image_free(data);
+	return image_id;
 }
 

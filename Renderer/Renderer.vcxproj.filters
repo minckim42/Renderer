@@ -42,7 +42,7 @@
     <ClCompile Include="Camera.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Group.cpp">
+    <ClCompile Include="Model.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
@@ -54,6 +54,9 @@
     <ClCompile Include="ObjLoader.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="StbImage.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.hpp">
@@ -62,7 +65,7 @@
     <ClInclude Include="Common.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Group.hpp">
+    <ClInclude Include="Model.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Renderer.hpp">
@@ -90,6 +93,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="ObjLoader.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="RendererBase.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
