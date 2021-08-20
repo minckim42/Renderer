@@ -8,8 +8,8 @@
 using namespace std;
 using namespace glm;
 
-//#define BOX
-#define SONA
+#define BOX
+//#define SONA
 
 int		main()
 {

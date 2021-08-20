@@ -22,7 +22,7 @@ uniform vec3		ks;
 
 void main()
 {
-	vec3	normal_tr = normalize(mat_face * (texture(tex_normal, vs_tex_coords).xyz * 2 - 1));
+	vec3	normal_tr = (mat_face * ((texture(tex_normal, vs_tex_coords).xyz * 2 - 1)));
 	// vec3	normal_tr = normalize(mat_face * vec3(0, 0, 1));
 	// vec3	normal_tr = vs_normal;
 	// vec3	normal_tr = mat_face * vec3(0, 1, 0);
@@ -33,11 +33,7 @@ void main()
 	float	strength = light_strength / dot(light_dir, light_dir) * 1000;
 
 	vec3	eye_dir_norm = normalize(eye - or_position);
-	// vec3	flec_dir_norm = normalize(normal_tr * max(0, dot(normal_tr, light_dir)) * 2 - light_dir);
 	vec3	flec_dir_norm = normalize(reflect(light_dir, normal_tr));
-
-	// vec3	eye_dir = eye - or_position;
-	// vec3	flec_dir_norm = normalize(2 * normal_tr - eye_dir);
 
 	vec3	ambient = (texture(tex_ambient, vs_tex_coords).xyz * ka)
 						 * light_color;
