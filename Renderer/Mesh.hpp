@@ -5,7 +5,7 @@
 #include "Vertex.hpp"
 #include "Material.hpp"
 #include "Object.hpp"
-#include "ShaderOpengl.hpp"
+#include "Shader.hpp"
 
 /*##############################################################################
 
@@ -88,7 +88,7 @@ class Mesh: public Object
 	void		set_tangents();
 	void		set_vertex_tangent(uint a, uint b, uint c);
 	void		set_buffer();
-	void		draw(ShaderOpengl& shader, glm::mat4& world);
+	void		draw(Shader& shader, glm::mat4& world);
 	
 	std::pair<glm::vec3, glm::vec3>		get_bounding_box();
 };

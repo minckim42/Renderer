@@ -31,7 +31,7 @@ Model::Model(Mesh&& mesh)
 	Methods
 =========================================*/
 
-void				Model::draw(ShaderOpengl& shader, glm::mat4& world)
+void				Model::draw(Shader& shader, glm::mat4& world)
 {
 	mat4	current = matrix * world;
 	for (Mesh& mesh : meshes)

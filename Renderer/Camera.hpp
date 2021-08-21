@@ -15,10 +15,10 @@ class Camera : public Object
 	=========================================*/
 
 	public:
-	float				z_far;
-	float				z_near;
 	float				fovy;
 	float				aspect;
+	float				z_far;
+	float				z_near;
 	glm::vec3			up;
 	glm::mat4			projection;
 	glm::mat4			view;

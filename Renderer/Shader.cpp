@@ -1,4 +1,4 @@
-#include "ShaderOpengl.hpp"
+#include "Shader.hpp"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -9,13 +9,13 @@ using namespace glm;
 	Constructor
 =========================================*/
 
-ShaderOpengl::ShaderOpengl():
+Shader::Shader():
 	program(0)
 {
 	
 }
 
-ShaderOpengl::~ShaderOpengl()
+Shader::~Shader()
 {
 	if (program)
 		glDeleteProgram(program);
@@ -25,7 +25,7 @@ ShaderOpengl::~ShaderOpengl()
 	Public methods
 =========================================*/
 
-GLuint			ShaderOpengl::compile_shader(const string& path, shader_type type)
+GLuint			Shader::compile_shader(const string& path, shader_type type)
 {
 	ifstream		ifs(path);
 	size_t			len;
@@ -49,7 +49,7 @@ GLuint			ShaderOpengl::compile_shader(const string& path, shader_type type)
 
 //------------------------------------------------------------------------------
 
-void			ShaderOpengl::link_shader_program()
+void			Shader::link_shader_program()
 {
 	program = glCreateProgram();
 	for (GLuint i : shaders)
@@ -67,49 +67,49 @@ void			ShaderOpengl::link_shader_program()
 
 //------------------------------------------------------------------------------
 
-GLuint			ShaderOpengl::get_program() const
+GLuint			Shader::get_program() const
 {
 	return program;
 }
 
 //------------------------------------------------------------------------------
 
-void			ShaderOpengl::use()
+void			Shader::use()
 {
 	glUseProgram(program);
 }
 
 //------------------------------------------------------------------------------
 
-void			ShaderOpengl::set_uniform(const string& name, float value)
+void			Shader::set_uniform(const string& name, float value)
 {
 	glUniform1f(glGetUniformLocation(program, name.c_str()), value);
 }
 
 //------------------------------------------------------------------------------
 
-void			ShaderOpengl::set_uniform(const string& name, int value)
+void			Shader::set_uniform(const string& name, int value)
 {
 	glUniform1i(glGetUniformLocation(program, name.c_str()), value);
 }
 
 //------------------------------------------------------------------------------
 
-void			ShaderOpengl::set_uniform(const string& name, const vec3& value)
+void			Shader::set_uniform(const string& name, const vec3& value)
 {
 	glUniform3f(glGetUniformLocation(program, name.c_str()), value[0], value[1], value[2]);
 }
 
 //------------------------------------------------------------------------------
 
-void			ShaderOpengl::set_uniform(const string& name, const mat3& value, bool transpose)
+void			Shader::set_uniform(const string& name, const mat3& value, bool transpose)
 {
 	glUniformMatrix3fv(glGetUniformLocation(program, name.c_str()), 1, transpose, value_ptr(value));
 }
 
 //------------------------------------------------------------------------------
 
-void			ShaderOpengl::set_uniform(const string& name, const mat4& value, bool transpose)
+void			Shader::set_uniform(const string& name, const mat4& value, bool transpose)
 {
 	glUniformMatrix4fv(glGetUniformLocation(program, name.c_str()), 1, transpose, value_ptr(value));
 }
@@ -118,7 +118,7 @@ void			ShaderOpengl::set_uniform(const string& name, const mat4& value, bool tra
 	private methods
 =========================================*/
 
-void			ShaderOpengl::check_shader(GLuint shader, shader_type type)
+void			Shader::check_shader(GLuint shader, shader_type type)
 {
 	string	shader_name;
 
@@ -146,7 +146,7 @@ void			ShaderOpengl::check_shader(GLuint shader, shader_type type)
 
 //------------------------------------------------------------------------------
 
-void			ShaderOpengl::check_program(GLuint program)
+void			Shader::check_program(GLuint program)
 {
 	int			success;
 	char		log[512];

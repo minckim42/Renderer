@@ -41,9 +41,6 @@ class WindowGlfw
 	GLFWmonitor*		_monitor;
 	GLFWwindow*			_share;
 
-	public:
-	RendererBase*		renderer;
-
 	/*=========================================
 		Constructor & Destructor
 	=========================================*/
@@ -86,10 +83,10 @@ class WindowGlfw
 	void				check_init(const char* function) const;
 
 	public:
-	// virtual void		prepare();
+	virtual void		prepare();
 	virtual void		loop();
-	// virtual bool		work();
-	// virtual void		terminate();
+	virtual bool		work();
+	virtual void		terminate();
 };
 
 /*=========================================

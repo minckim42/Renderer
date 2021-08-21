@@ -152,7 +152,7 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjLoader.cpp" />
     <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="ShaderOpengl.cpp" />
+    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="StbImage.cpp" />
     <ClCompile Include="Vertex.cpp" />
@@ -168,7 +168,7 @@
     <ClInclude Include="ObjLoader.hpp" />
     <ClInclude Include="Renderer.hpp" />
     <ClInclude Include="RendererBase.hpp" />
-    <ClInclude Include="ShaderOpengl.hpp" />
+    <ClInclude Include="Shader.hpp" />
     <ClInclude Include="Material.hpp" />
     <ClInclude Include="Vertex.hpp" />
     <ClInclude Include="WindowGlfw.hpp" />

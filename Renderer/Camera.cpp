@@ -34,17 +34,17 @@ Camera::Camera(
 	glm::vec3	position, 
 	glm::vec3	direction, 
 	glm::vec3	up,
-	float		z_far,
-	float		z_near,
 	float		fovy,
-	float		aspect
+	float		aspect,
+	float		z_far,
+	float		z_near
 ):
 Object(position, direction, up),
+up(up),
 fovy(fovy), 
 aspect(aspect), 
 z_far(z_far), 
-z_near(z_near),
-up(up)
+z_near(z_near)
 {
 	update_projection();
 	update_view();

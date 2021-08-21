@@ -29,7 +29,7 @@ color(1, 1, 1)
 	Methods
 =========================================*/
 
-void		Light::draw(ShaderOpengl& shader)
+void		Light::draw(Shader& shader)
 {
 	shader.set_uniform("light_position", get_position());
 	shader.set_uniform("light_strength", strength);

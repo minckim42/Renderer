@@ -48,7 +48,7 @@ class Model: public Object
 	=========================================*/
 
 	public:
-	void			draw(ShaderOpengl& shader, glm::mat4& world);
+	void			draw(Shader& shader, glm::mat4& world);
 	void			add_mesh(Mesh& mesh);
 	void			add_mesh(Mesh&& mesh);
 	void			add_child(Mesh& mesh);

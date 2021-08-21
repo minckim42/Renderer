@@ -1,6 +1,6 @@
 #pragma once
 #include "Object.hpp"
-#include "ShaderOpengl.hpp"
+#include "Shader.hpp"
 
 /*##############################################################################
 
@@ -32,5 +32,5 @@ class Light: public Object
 	=========================================*/
 
 	public:
-	void		draw(ShaderOpengl& shader);
+	void		draw(Shader& shader);
 };

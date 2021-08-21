@@ -27,7 +27,7 @@
     <ClCompile Include="..\glad.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderOpengl.cpp">
+    <ClCompile Include="Shader.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Light.cpp">
@@ -71,7 +71,7 @@
     <ClInclude Include="Renderer.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderOpengl.hpp">
+    <ClInclude Include="Shader.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="WindowGlfw.hpp">

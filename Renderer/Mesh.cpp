@@ -214,7 +214,7 @@ void		Mesh::set_buffer()
 	glBindVertexArray(0);
 }
 #include <iostream>
-void		Mesh::draw(ShaderOpengl& shader, mat4& world)
+void		Mesh::draw(Shader& shader, mat4& world)
 {
 	glBindVertexArray(vao);
 	shader.set_uniform("model", world * matrix);

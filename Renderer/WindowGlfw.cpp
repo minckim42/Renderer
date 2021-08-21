@@ -150,34 +150,33 @@ void				WindowGlfw::check_init(const char* function) const
 
 //------------------------------------------------------------------------------
 
-// void				WindowGlfw::prepare()
-// {}
+void				WindowGlfw::prepare()
+{}
 
 //------------------------------------------------------------------------------
 
-// bool				WindowGlfw::work()
-// {
-// 	return true;
-// }
+bool				WindowGlfw::work()
+{
+	return true;
+}
 
 //------------------------------------------------------------------------------
 
 void				WindowGlfw::loop()
 {
 	glfwSetFramebufferSizeCallback(_window, frame_resize);
-	renderer->prepare();
-	while (!glfwWindowShouldClose(_window) && renderer->loop())
+	while (!glfwWindowShouldClose(_window) && work())
 	{
 		glfwSwapBuffers(_window);
 		glfwPollEvents();
 	}
-	renderer->terminate();
+	terminate();
 }
 
 //------------------------------------------------------------------------------
 
-// void				WindowGlfw::terminate()
-// {}
+void				WindowGlfw::terminate()
+{}
 
 //------------------------------------------------------------------------------
 

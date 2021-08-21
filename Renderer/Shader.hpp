@@ -38,7 +38,7 @@ enum class shader_type
 	compute = GL_COMPUTE_SHADER
 };
 
-class ShaderOpengl
+class Shader
 {
 	/*=========================================
 		Members
@@ -53,9 +53,9 @@ class ShaderOpengl
 	=======================================*/
 	
 	public:
-	ShaderOpengl();
+	Shader();
 
-	virtual				~ShaderOpengl();
+	virtual				~Shader();
 
 	/*=======================================
 		Methods
