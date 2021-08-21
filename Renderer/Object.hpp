@@ -19,12 +19,13 @@ class Object
 	glm::mat4			matrix;
 
 	/*=======================================
-		Constructor & Destructor
+		Constructor
 	=======================================*/
-	/* constructor */	Object();
-	/* constructor */	Object(const glm::mat4& mat);
-	/* constructor */	Object(glm::vec3 position, glm::vec3 x,	glm::vec3 z); // z is prior to x
-	/* constructor */	Object(const Object& x) = default;
+	Object();
+	Object(const glm::mat4& mat);
+	Object(glm::vec3 position, glm::vec3 x,	glm::vec3 z); // z is prior to x
+	Object(const Object& x) = default;
+	
 	virtual				~Object() = default;
 	Object&				operator=(const Object& x) = default;
 	Object&				operator=(Object&& x);

@@ -53,15 +53,19 @@ public:
 	static uint			default_texture_normal;
 
 	/*=========================================
-		Constructor & Destructor
+		Constructor
 	=========================================*/
 	
 	public:
-						Material();
-						Material(const std::string& name);
-						Material(const Material& x) = default;
+	Material();
+	Material(const std::string& name);
+	Material(const Material& x) = default;
 	virtual				~Material() = default;
 	Material&			operator=(const Material& x) = default;
+
+	/*=========================================
+		Methods
+	=========================================*/	
 
 	static uint			init_default_texture();
 	static uint			init_default_texture_normal();

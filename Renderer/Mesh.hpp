@@ -43,27 +43,28 @@ class Mesh: public Object
 	=========================================*/
 
 	public:
-				Mesh()=default;
-				Mesh(
-					vector_vec3& 		positions, 
-					vector_vec3& 		normals, 
-					vector_vec2& 		tex_coords,
-					std::vector<uint>&	indices,
-					Material*			material
+	Mesh()=default;
+	Mesh(
+		vector_vec3& 		positions, 
+		vector_vec3& 		normals, 
+		vector_vec2& 		tex_coords,
+		std::vector<uint>&	indices,
+		Material*			material
 
-				);
-				Mesh(
-					vector_vec3& 		positions, 
-					vector_vec3& 		normals, 
-					vector_vec2& 		tex_coords, 
-					vector_vec3& 		tangents, 
-					vector_vec3& 		bi_tangents,
-					std::vector<uint>&	indices,
-					Material*			material
+	);
+	Mesh(
+		vector_vec3& 		positions, 
+		vector_vec3& 		normals, 
+		vector_vec2& 		tex_coords, 
+		vector_vec3& 		tangents, 
+		vector_vec3& 		bi_tangents,
+		std::vector<uint>&	indices,
+		Material*			material
 
-				);
-				Mesh(Mesh& x);
-				Mesh(Mesh&& x);
+	);
+	Mesh(Mesh& x);
+	Mesh(Mesh&& x);
+	
 	virtual		~Mesh();
 	Mesh&		operator=(const Mesh& x);
 	Mesh&		operator=(Mesh&& x);

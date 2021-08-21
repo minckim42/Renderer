@@ -7,13 +7,13 @@ using namespace glm;
 	Constructor
 =========================================*/
 
-/* con */	Mesh::Mesh(
-				vector_vec3& 	positions, 
-				vector_vec3& 	normals, 
-				vector_vec2& 	tex_coords,
-				vector<uint>&	indices, 
-				Material*		material
-			):
+Mesh::Mesh(
+	vector_vec3& 	positions, 
+	vector_vec3& 	normals, 
+	vector_vec2& 	tex_coords,
+	vector<uint>&	indices, 
+	Material*		material
+):
 	indices(indices),
 	material(material),
 	vao(0), vbo(0), ebo(0)
@@ -24,15 +24,15 @@ using namespace glm;
 
 //------------------------------------------------------------------------------
 
-/* con */	Mesh::Mesh(
-				vector_vec3& 	positions, 
-				vector_vec3& 	normals, 
-				vector_vec2& 	tex_coords, 
-				vector_vec3& 	tangents, 
-				vector_vec3& 	bi_tangents,
-				vector<uint>&	indices, 
-				Material*		material
-			):
+Mesh::Mesh(
+	vector_vec3& 	positions, 
+	vector_vec3& 	normals, 
+	vector_vec2& 	tex_coords, 
+	vector_vec3& 	tangents, 
+	vector_vec3& 	bi_tangents,
+	vector<uint>&	indices, 
+	Material*		material
+):
 	indices(indices),
 	material(material),
 	vao(0), vbo(0), ebo(0)
@@ -56,14 +56,17 @@ Mesh::Mesh(Mesh& x)
 
 //------------------------------------------------------------------------------
 
-Mesh::Mesh(Mesh&& x)
+Mesh::Mesh(Mesh&& x):
+	vao(x.vao),
+	vbo(x.vbo),
+	ebo(x.ebo)
 {
 	vertices.swap(x.vertices);
 	indices.swap(x.indices);
 	material = x.material;
-	swap(vao, x.vao);
-	swap(vbo, x.vbo);
-	swap(ebo, x.ebo);
+	x.vao = 0;
+	x.vbo = 0;
+	x.ebo = 0;
 }
 
 //------------------------------------------------------------------------------

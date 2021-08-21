@@ -14,6 +14,8 @@
 
 ##############################################################################*/
 
+typedef std::unordered_map<std::string, Material>	MaterialContainer;
+
 class ObjLoader
 {
 	struct GroupTmp
@@ -31,24 +33,23 @@ class ObjLoader
 	=========================================*/
 
 	public:
-	typedef std::unordered_map<std::string, Material>	MaterialContainer;
+
 
 	/*=========================================
 		Members
 	=========================================*/
 
 	private:
-	std::string			directory;
-	std::string			line;
-	std::string			key;
-	std::string			value;
-	std::ifstream		ifs;
-	std::stringstream	ss;
+	std::string				directory;
+	std::string				line;
+	std::string				key;
+	std::string				value;
+	std::ifstream			ifs;
+	std::stringstream		ss;
 
-	public:
-	std::list<GroupTmp>			list_tmp;
-	Model&						model;
-	MaterialContainer&			materials;
+	std::list<GroupTmp>		list_tmp;
+	Model&					model;
+	MaterialContainer&		materials;
 
 	std::map<std::string, void (ObjLoader::*)()>	obj_key_map;
 
@@ -65,7 +66,7 @@ class ObjLoader
 		Methods
 	=========================================*/
 
-	public:
+	private:
 	void			init_obj_key_map();
 	void			reset_stream();
 	void			parse_g();
@@ -86,14 +87,7 @@ class ObjLoader
 
 class MtlLoader
 {
-	/*=========================================
-		Types
-	=========================================*/
-
-	public:
-	typedef ObjLoader::MaterialContainer	MaterialContainer;
-
-	public:
+	private:
 	std::string			directory;
 	std::string			line;
 	std::string			key;
@@ -119,7 +113,7 @@ class MtlLoader
 		Methods
 	=========================================*/
 
-	public:
+	private:
 	void			init_mtl_key_map();
 	void			parse_newmtl();
 	void			reset_stream();
@@ -146,8 +140,5 @@ class MtlLoader
 
 ##############################################################################*/
 
-void				put_coord(std::istream& is, std::vector<glm::vec3>& container);
-void				put_coord(std::istream& is, std::vector<glm::vec2>& container);
-void				put_coord(std::istream& is, glm::vec3& target);
-void				put_coord(std::istream& is, glm::vec2& target);
 unsigned int		image_loader(const std::string& path);
+void				obj_loader(const std::string& path, Model& model, MaterialContainer& materials);

@@ -12,6 +12,10 @@ using namespace glm;
 uint	Material::default_texture;
 uint	Material::default_texture_normal;
 
+/*=========================================
+	Methods
+=========================================*/	
+
 Material::Material():
 param({ 
 	{1, 1, 1},	// ka
@@ -30,6 +34,8 @@ illum(0),
 name("noname")
 {}
 
+//------------------------------------------------------------------------------
+
 Material::Material(const string& name):
 param({ 
 	{1, 1, 1},	// ka
@@ -47,6 +53,10 @@ map_bump(default_texture_normal),
 illum(0),
 name(name)
 {}
+
+/*=========================================
+	Methods
+=========================================*/	
 
 uint		Material::init_default_texture()
 {
@@ -74,6 +84,8 @@ uint		Material::init_default_texture()
 	glGenerateMipmap(GL_TEXTURE_2D);
 	return default_texture;
 }
+
+//------------------------------------------------------------------------------
 
 uint		Material::init_default_texture_normal()
 {

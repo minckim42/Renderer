@@ -8,14 +8,14 @@
 using namespace std;
 using namespace glm;
 
-#define BOX
-//#define SONA
+//#define BOX
+#define SONA
 
 int		main()
 {
 	try
 	{
-		WindowGlfw	window(1920, 1080, "test");
+		WindowGlfw	window(1280, 720, "test");
 		Renderer	renderer;
 		window.init();
 		init_glad();
@@ -29,8 +29,8 @@ int		main()
 		renderer.shader.compile_shader("shader_fragment.glsl", shader_type::fragment);
 		renderer.shader.link_shader_program();
 
-		renderer.light.set_position(vec3(5000, 5000, 5000));
-		renderer.light.strength = 80000;
+		renderer.light.set_position(vec3(0, 5000, 0));
+		renderer.light.strength = 40000;
 
 		#ifdef BOX
 		renderer.add_file("./box/box.obj", model_format::obj);

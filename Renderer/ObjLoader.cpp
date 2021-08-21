@@ -3,6 +3,11 @@
 using namespace std;
 using namespace glm;
 
+void				put_coord(std::istream& is, std::vector<glm::vec3>& container);
+void				put_coord(std::istream& is, std::vector<glm::vec2>& container);
+void				put_coord(std::istream& is, glm::vec3& target);
+void				put_coord(std::istream& is, glm::vec2& target);
+
 /*##############################################################################
 
 	obj Loader
@@ -382,7 +387,6 @@ unsigned int		image_loader(const std::string& path)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
 	
 	stbi_set_flip_vertically_on_load(true);
 
@@ -410,3 +414,7 @@ unsigned int		image_loader(const std::string& path)
 	return image_id;
 }
 
+void			obj_loader(const string& path, Model& model, MaterialContainer& materials)
+{
+	ObjLoader	tmp(path, model, materials);
+}

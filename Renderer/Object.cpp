@@ -10,22 +10,22 @@ using namespace std;
 ##############################################################################*/
 
 /*=======================================
-	Canonical form
+	Constructor
 =======================================*/
 
-/* constructor */	Object::Object():
+Object::Object():
 matrix(1.0f)
 {}
 
 //------------------------------------------------------------------------------
 
-/* constructor */	Object::Object(const mat4& mat):
+Object::Object(const mat4& mat):
 matrix(mat)
 {}
 
 //------------------------------------------------------------------------------
 
-/* constructor */	Object::Object(vec3 position, vec3 x, vec3 z)
+Object::Object(vec3 position, vec3 x, vec3 z)
 {
 	// direction = normalize(direction);
 	z = normalize(z);

@@ -50,6 +50,8 @@ void			Renderer::prepare()
 	if (!shader.get_program())
 		throw string("Shader does not exist");
 	set_model_size();
+	camera.z_near = model_size * 0.001;
+	camera.z_far = model_size * 0.100;
 	camera.set_position(vec3(model_size * 2, 0, model_size / 2));
 	glEnable(GL_DEPTH_TEST);
 }

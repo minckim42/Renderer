@@ -7,7 +7,7 @@ Tf 0.0000 0.0000 0.0000
 d 1.0000
 Ns 0.0000
 # map_Kd   img_diffuse.png
-# map_Bump img_normal.bmp
-map_Bump img_normal.png
+map_Bump img_normal.bmp
+# map_Bump img_normal.png
 # map_Kd   df.png
 # map_Bump nr.bmp
