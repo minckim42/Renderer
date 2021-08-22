@@ -41,10 +41,12 @@ ObjLoader::ObjLoader(const string& path, Model& model, MaterialContainer& materi
 		(this->*obj_key_map[key])();
 		reset_stream();
 	}
-
 	for (GroupTmp& tmp: list_tmp)
 	{
-		model.add_child(Mesh(tmp.positions, tmp.normals, tmp.tex_coords, tmp.indices, tmp.material));
+		if (!tmp.tex_coords.empty())
+			model.add_child(Mesh(tmp.positions, tmp.normals, tmp.tex_coords, tmp.indices, tmp.material));
+		else
+			model.add_child(Mesh(tmp.positions, tmp.normals, tmp.indices, tmp.material));
 	}
 }
 

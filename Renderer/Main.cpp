@@ -9,6 +9,7 @@
 using namespace std;
 using namespace glm;
 
+//#define BIGBOY
 //#define BOX
 #define SONA
 
@@ -102,7 +103,7 @@ int		main()
 {
 	try
 	{
-		Window		window(1280, 720, "test");
+		Window		window(1920, 1080, "test");
 		window.init();
 		init_glad();
 
@@ -133,6 +134,11 @@ int		main()
 		obj_loader("./sona/weapon.obj", world, materials);
 		#endif
 
+
+		#ifdef BIGBOY
+		obj_loader("../../sources/big_boy/big_boy.obj", world, materials);
+		#endif
+
 		float	model_size = get_model_size(world);
 		window.model_size = model_size;
 
@@ -159,7 +165,6 @@ int		main()
 	{
 		std::cerr << e << '\n';
 	}
-	
 
 
 	return 0;

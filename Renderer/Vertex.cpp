@@ -1,15 +1,23 @@
 #include "Vertex.hpp"
 
 Vertex::Vertex(
+	const glm::vec3& position,
+	const glm::vec3& normal
+) :
+	position(position),
+	normal(normal)
+{
+
+}
+
+Vertex::Vertex(
 	const glm::vec3&	position,
 	const glm::vec3&	normal,
 	const glm::vec2&	tex_coord
 ):
 	position(position),
 	normal(normal),
-	tex_coord(tex_coord),
-	tangent(),
-	bi_tangent()
+	tex_coord(tex_coord)
 {
 
 }

@@ -45,12 +45,17 @@ class Mesh: public Object
 	public:
 	Mesh()=default;
 	Mesh(
+		vector_vec3&		positions,
+		vector_vec3&		normals,
+		std::vector<uint>&	indices,
+		Material*			material
+	);
+	Mesh(
 		vector_vec3& 		positions, 
 		vector_vec3& 		normals, 
 		vector_vec2& 		tex_coords,
 		std::vector<uint>&	indices,
 		Material*			material
-
 	);
 	Mesh(
 		vector_vec3& 		positions, 
@@ -72,7 +77,10 @@ class Mesh: public Object
 	/*=========================================
 		Methods
 	=========================================*/
-
+	void		set_vertices(
+					vector_vec3&		positions,
+					vector_vec3&		normals
+	);
 	void		set_vertices(
 					vector_vec3& 		positions, 
 					vector_vec3& 		normals, 
@@ -85,6 +93,7 @@ class Mesh: public Object
 					vector_vec3& 		tangents, 
 					vector_vec3& 		bi_tangents
 				);
+	void		set_pseudo_tex_coord();
 	void		set_tangents();
 	void		set_vertex_tangent(uint a, uint b, uint c);
 	void		set_buffer();

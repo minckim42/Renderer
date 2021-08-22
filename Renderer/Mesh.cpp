@@ -8,6 +8,22 @@ using namespace glm;
 =========================================*/
 
 Mesh::Mesh(
+	vector_vec3&	positions,
+	vector_vec3&	normals,
+	vector<uint>&	indices,
+	Material*		material
+):
+	indices(indices),
+	material(material),
+	vao(0), vbo(0), ebo(0)
+{
+	set_vertices(positions, normals);
+	set_buffer();
+}
+
+//------------------------------------------------------------------------------
+
+Mesh::Mesh(
 	vector_vec3& 	positions, 
 	vector_vec3& 	normals, 
 	vector_vec2& 	tex_coords,
@@ -112,6 +128,23 @@ Mesh&		Mesh::operator=(Mesh&& x)
 	Methods
 =========================================*/
 
+//------------------------------------------------------------------------------
+
+void		Mesh::set_vertices(
+				vector_vec3&		positions,
+				vector_vec3&		normals
+)
+{
+	for (int i = 0; i < positions.size(); i++)
+	{
+		vertices.emplace_back(
+			positions[i],
+			normals[i]
+		);
+	}
+	set_pseudo_tex_coord();
+	// set_tangents();
+}
 
 //------------------------------------------------------------------------------
 
@@ -131,6 +164,8 @@ void		Mesh::set_vertices(
 	}
 	set_tangents();
 }
+
+//------------------------------------------------------------------------------
 
 void		Mesh::set_vertices(		
 				vector_vec3& 		positions, 
@@ -152,6 +187,22 @@ void		Mesh::set_vertices(
 	}
 }
 
+//------------------------------------------------------------------------------
+
+void		Mesh::set_pseudo_tex_coord()
+{
+	float		d_theta = pi<float>() / vertices.size();
+	for (int i = 0 ; i < vertices.size() ; i++)
+	{
+		float	theta = d_theta * i + pi<float>() * (i & 3) / 2;
+		vertices[i].tex_coord = vec2(0.5 + cos(theta), 0.5 + sin(theta));
+		vertices[i].tangent = vec3(0, 0, 0);
+		vertices[i].bi_tangent = vec3(0, 0, 0);
+	}
+}
+
+//------------------------------------------------------------------------------
+
 void		Mesh::set_tangents()
 {
 	for (int i = 0 ; i < indices.size() ; i += 3)
@@ -161,6 +212,8 @@ void		Mesh::set_tangents()
 		set_vertex_tangent(indices[i + 2], indices[i], indices[i + 1]);
 	}
 }
+
+//------------------------------------------------------------------------------
 
 void		Mesh::set_vertex_tangent(uint a, uint b, uint c)
 {
@@ -186,6 +239,8 @@ void		Mesh::set_vertex_tangent(uint a, uint b, uint c)
 	vertices[a].tangent = (N[0]);
 	vertices[a].bi_tangent = (N[1]);
 }
+
+//------------------------------------------------------------------------------
 
 void		Mesh::set_buffer()
 {
@@ -213,6 +268,9 @@ void		Mesh::set_buffer()
 
 	glBindVertexArray(0);
 }
+
+//------------------------------------------------------------------------------
+
 #include <iostream>
 void		Mesh::draw(Shader& shader, mat4& world)
 {
@@ -242,6 +300,8 @@ void		Mesh::draw(Shader& shader, mat4& world)
 	}
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 }
+
+//------------------------------------------------------------------------------
 
 pair<vec3, vec3>	Mesh::get_bounding_box()
 {

@@ -27,6 +27,10 @@ struct Vertex
 	Vertex()=default;
 	Vertex(
 		const glm::vec3&	position,
+		const glm::vec3&	normal
+	);
+	Vertex(
+		const glm::vec3&	position,
 		const glm::vec3&	normal,
 		const glm::vec2&	tex_coord
 	);
