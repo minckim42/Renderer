@@ -209,11 +209,10 @@ private:
 
 int			main(int argc, char** argv)
 {
-	Image		img("../Renderer/box/img_height.png");
+	Image		img("../Renderer/ground/stone-floor-texture_height.png");
 	Height_map	hmap(img);
 	Normal_map	nmap(hmap);
-	nmap.to_bmp("../Renderer/box/img_normal.bmp");
-
+	nmap.to_bmp("../Renderer/ground/stone-floor-texture_height.bmp");
 
 	//string		path = "img_normal.bmp";
 	//ifstream	ifs(path, ios::binary);

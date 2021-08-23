@@ -12,8 +12,9 @@ using namespace glm;
 // #define BIGBOY
 // #define BOX
 #define SONA
+// #define STAR
 
-#define ROTATE
+ #define ROTATE
 
 
 float	get_model_size(Model& model)
@@ -39,7 +40,7 @@ class Window: public WindowGlfw
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		key_process();
 		#ifdef ROTATE
-		renderer->model->matrix = rotate(0.005f, vec3(0, 0, 1)) * renderer->model->matrix;
+		renderer->model->children[1]->matrix = rotate(0.005f, vec3(0, 0, 1)) * renderer->model->children[1]->matrix;
 		#endif
 		renderer->draw();
 		return true;
@@ -119,37 +120,47 @@ int		main()
 		window.renderer = &renderer;
 
 		Light		light;
-		light.set_position(vec3(0, 5000, 0));
-		light.strength = 40000;
+		light.set_position(vec3(5000, 0, 0));
+		light.strength = 5000;
 
-		Model		world;
+		Model				world;
 
 		MaterialContainer	materials;
 		Material::init_default_texture();
 		Material::init_default_texture_normal();
 
+		obj_loader("./ground/ground.obj", world, materials);
+
+		shared_ptr<Model>	model = make_shared<Model>();
+		world.add_child(model);
+
 		#ifdef BOX
-		obj_loader("./box/box.obj", world, materials);
+		obj_loader("./box/box.obj", *model, materials);
 		#endif
 
 		#ifdef SONA
-		obj_loader("./sona/cloth.obj", world, materials);
-		obj_loader("./sona/skin.obj", world, materials);
-		obj_loader("./sona/hair.obj", world, materials);
-		obj_loader("./sona/weapon.obj", world, materials);
+		obj_loader("./sona/cloth.obj", *model, materials);
+		obj_loader("./sona/skin.obj", *model, materials);
+		obj_loader("./sona/hair.obj", *model, materials);
+		obj_loader("./sona/weapon.obj", *model, materials);
 		#endif
 
 
 		#ifdef BIGBOY
-		obj_loader("../../sources/big_boy/big_boy.obj", world, materials);
+		obj_loader("../../sources/big_boy/big_boy.obj", *model, materials);
 		#endif
 
-		float	model_size = get_model_size(world);
+		#ifdef STAR
+		obj_loader("../../sources/starpolis/starpolis_1.obj", *model, materials);
+		light.set_position(vec3(0, 1000000, 0));
+		light.strength = 1;
+		#endif
+		float	model_size = get_model_size(*model);
 		window.model_size = model_size;
 
 		Camera		camera(
-						vec3( model_size * 2, 0, model_size / 2),
-						vec3(-1, 0, 0), vec3(0, 0, 1),
+						vec3(0, -model_size * 2, model_size / 2),
+						vec3(0, 1, 0), vec3(0, 0, 1),
 						pi<float>() / 3,
 						16.0f/9,
 						model_size * 10,

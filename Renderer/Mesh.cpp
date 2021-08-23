@@ -135,6 +135,7 @@ void		Mesh::set_vertices(
 				vector_vec3&		normals
 )
 {
+	vertices.reserve(positions.size());
 	for (int i = 0; i < positions.size(); i++)
 	{
 		vertices.emplace_back(
@@ -154,6 +155,7 @@ void		Mesh::set_vertices(
 				vector_vec2& 		tex_coords
 			)
 {
+	vertices.reserve(positions.size());
 	for (int i = 0 ; i < positions.size() ; i++)
 	{
 		vertices.emplace_back(
@@ -175,6 +177,7 @@ void		Mesh::set_vertices(
 				vector_vec3& 		bi_tangents
 			)
 {
+	vertices.reserve(positions.size());
 	for (int i = 0 ; i < positions.size() ; i++)
 	{
 		vertices.emplace_back(
@@ -195,7 +198,7 @@ void		Mesh::set_pseudo_tex_coord()
 	for (int i = 0 ; i < vertices.size() ; i++)
 	{
 		float	theta = d_theta * i + pi<float>() * (i & 3) / 2;
-		vertices[i].tex_coord = vec2(0.5 + cos(theta), 0.5 + sin(theta));
+		vertices[i].tex_coord = vec2(0.5 + cos(theta) / 2, 0.5 + sin(theta) / 2);
 		vertices[i].tangent = vec3(0, 0, 0);
 		vertices[i].bi_tangent = vec3(0, 0, 0);
 	}

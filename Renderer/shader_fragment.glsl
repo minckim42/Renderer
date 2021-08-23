@@ -30,7 +30,7 @@ void main()
 	vec3	light_dir = light_position - vs_position;
 	vec3	light_dir_norm = normalize(light_dir);
 
-	float	strength = light_strength / dot(light_dir, light_dir) * 1000;
+	float	strength = light_strength * light_strength / dot(light_dir, light_dir);
 
 	vec3	eye_dir_norm = normalize(eye - vs_position);
 	vec3	flec_dir_norm = normalize(reflect(-light_dir, normal_tr));
