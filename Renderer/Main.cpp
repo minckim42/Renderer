@@ -9,9 +9,12 @@
 using namespace std;
 using namespace glm;
 
-//#define BIGBOY
-//#define BOX
+// #define BIGBOY
+// #define BOX
 #define SONA
+
+#define ROTATE
+
 
 float	get_model_size(Model& model)
 {
@@ -35,7 +38,9 @@ class Window: public WindowGlfw
 		glClearColor(0.3, 0.3, 0.3, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		key_process();
+		#ifdef ROTATE
 		renderer->model->matrix = rotate(0.005f, vec3(0, 0, 1)) * renderer->model->matrix;
+		#endif
 		renderer->draw();
 		return true;
 	}
@@ -124,7 +129,7 @@ int		main()
 		Material::init_default_texture_normal();
 
 		#ifdef BOX
-		obj_loader("./box/box.obj", model_format::obj);
+		obj_loader("./box/box.obj", world, materials);
 		#endif
 
 		#ifdef SONA
