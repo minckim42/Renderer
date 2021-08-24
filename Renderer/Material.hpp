@@ -1,7 +1,9 @@
 #pragma once
+#include <unordered_map>
 #include <string>
 #include <glm/glm.hpp>
 #include <glad/glad.h>
+#include <stb_image.h>
 
 
 /*##############################################################################
@@ -70,3 +72,13 @@ public:
 	static uint			init_default_texture();
 	static uint			init_default_texture_normal();
 };
+
+/*##############################################################################
+
+	None Member
+
+##############################################################################*/
+
+unsigned int		image_loader(const std::string& path);
+
+typedef std::unordered_map<std::string, Material>	MaterialContainer;

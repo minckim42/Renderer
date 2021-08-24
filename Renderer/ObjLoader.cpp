@@ -378,43 +378,7 @@ void				put_coord(std::istream& is, glm::vec2& target)
 
 //------------------------------------------------------------------------------
 
-unsigned int		image_loader(const std::string& path)
-{
-	unsigned int	image_id;
 
-	glGenTextures(1, &image_id);
-	glBindTexture(GL_TEXTURE_2D, image_id);
-	
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	
-	stbi_set_flip_vertically_on_load(true);
-
-	int				width, height, nr_channel;
-	unsigned char*	data = stbi_load(path.c_str(), &width, &height, &nr_channel, 0);
-
-	if (!data)
-	{
-		throw string("Failed to load image file: ") + path;
-	}
-	unsigned int	format[5] = {0, GL_RED, 0, GL_RGB, GL_RGBA};
-	glTexImage2D(
-		GL_TEXTURE_2D, 
-		0, 
-		format[nr_channel], 
-		width, 
-		height, 
-		0, 
-		format[nr_channel], 
-		GL_UNSIGNED_BYTE, 
-		data
-	);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	stbi_image_free(data);
-	return image_id;
-}
 
 void			obj_loader(const string& path, Model& model, MaterialContainer& materials)
 {

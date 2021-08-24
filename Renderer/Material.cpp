@@ -119,3 +119,50 @@ uint		Material::init_default_texture_normal()
 	glGenerateMipmap(GL_TEXTURE_2D);
 	return default_texture_normal;
 }
+
+/*##############################################################################
+
+	None Member
+
+##############################################################################*/
+#include <iostream>
+
+unsigned int		image_loader(const std::string& path)
+{
+	unsigned int	image_id;
+
+	glGenTextures(1, &image_id);
+	glBindTexture(GL_TEXTURE_2D, image_id);
+	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	
+	// stbi_set_flip_vertically_on_load(true);
+
+	int				width, height, nr_channel;
+	unsigned char*	data = stbi_load(path.c_str(), &width, &height, &nr_channel, 0);
+
+	if (!data)
+	{
+		// throw string("Failed to load image file: ") + path;
+		cout << "Failed to load image file: " << path << endl;
+		return Material::default_texture;
+	}
+	unsigned int	format[5] = {0, GL_RED, 0, GL_RGB, GL_RGBA};
+	glTexImage2D(
+		GL_TEXTURE_2D, 
+		0, 
+		format[nr_channel], 
+		width, 
+		height, 
+		0, 
+		format[nr_channel], 
+		GL_UNSIGNED_BYTE, 
+		data
+	);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	stbi_image_free(data);
+	return image_id;
+}

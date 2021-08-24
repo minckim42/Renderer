@@ -2,19 +2,28 @@
 #include "Renderer.hpp"
 #include "Object.hpp"
 #include "ObjLoader.hpp"
+#include "AssimpLoader.hpp"
 #include <iostream>
 #include <glm/glm.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/ext.hpp>
+#include <chrono>
 using namespace std;
 using namespace glm;
 
-// #define BIGBOY
-// #define BOX
-#define SONA
-// #define STAR
 
- #define ROTATE
+// #define ROTATE
+
+
+#define UP_Z
+
+#ifdef UP_Z
+# define FRONT vec3(0, 1, 0)
+# define UP vec3(0, 0, 1)
+#else
+# define FRONT vec3(0, 0, -1)
+# define UP vec3(0, 1, 0)
+#endif
 
 
 float	get_model_size(Model& model)
@@ -28,19 +37,24 @@ class Window: public WindowGlfw
 	public:
 	Renderer*	renderer;
 	float		model_size;
+	float		speed;
+	
+	chrono::system_clock::time_point	prev;
 
 	public:
 	Window(int width, int height, const std::string& name):
-		WindowGlfw(width, height, name)
+		WindowGlfw(width, height, name),
+		prev(chrono::system_clock::now()),
+		speed(1)
 	{}
 
 	bool		work()
 	{
-		glClearColor(0.3, 0.3, 0.3, 1);
+		glClearColor(0.0, 0.0, 0.0, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		key_process();
 		#ifdef ROTATE
-		renderer->model->children[1]->matrix = rotate(0.005f, vec3(0, 0, 1)) * renderer->model->children[1]->matrix;
+		renderer->model->children[0]->matrix = rotate(0.005f, UP) * renderer->model->children[0]->matrix;
 		#endif
 		renderer->draw();
 		return true;
@@ -48,8 +62,10 @@ class Window: public WindowGlfw
 
 	void 			key_process()
 	{
-		float	len = model_size * 0.01;
-		float	rad = 0.01;
+		chrono::duration<float>	interval(chrono::system_clock::now() - prev);
+
+		float	len = model_size * 0.001 * interval.count() * speed;
+		float	rad = 0.0005 * interval.count();
 		if (glfwGetKey(get_window(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		{
 			glfwSetWindowShouldClose(get_window(), true);
@@ -72,11 +88,11 @@ class Window: public WindowGlfw
 		}
 		if (glfwGetKey(get_window(), GLFW_KEY_LEFT) == GLFW_PRESS)
 		{
-			renderer->camera->yaw(rad, vec3(0, 0, 1));
+			renderer->camera->yaw(rad, renderer->camera->up);
 		}
 		if (glfwGetKey(get_window(), GLFW_KEY_RIGHT) == GLFW_PRESS)
 		{
-			renderer->camera->yaw(-rad, vec3(0, 0, 1));
+			renderer->camera->yaw(-rad, renderer->camera->up);
 		}
 		if (glfwGetKey(get_window(), GLFW_KEY_UP) == GLFW_PRESS)
 		{
@@ -88,11 +104,23 @@ class Window: public WindowGlfw
 		}
 		if (glfwGetKey(get_window(), GLFW_KEY_SPACE) == GLFW_PRESS)
 		{
-			renderer->camera->move(vec3(0, 0, len));
+			renderer->camera->move(UP * len);
 		}
 		if (glfwGetKey(get_window(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 		{
-			renderer->camera->move(vec3(0, 0, -len));
+			renderer->camera->move(UP * -len);
+		}
+		if (glfwGetKey(get_window(), GLFW_KEY_LEFT_BRACKET) == GLFW_PRESS)
+		{
+			speed /= 1.1;
+			if (speed < 0.0000001)
+				speed = 0.0000001;
+			cout << speed << endl;
+		}
+		if (glfwGetKey(get_window(), GLFW_KEY_RIGHT_BRACKET) == GLFW_PRESS)
+		{
+			speed *= 1.1;
+			cout << speed << endl;
 		}
 		renderer->camera->update_view();
 
@@ -104,6 +132,16 @@ class Window: public WindowGlfw
 };
 
 
+// #define BIGBOY
+// #define BOX
+// #define SONA
+// #define STAR
+// #define CLOCK
+// #define WALKING_MAN
+// #define PACK
+#define HOUSE
+
+// #define GROUND
 
 int		main()
 {
@@ -129,43 +167,93 @@ int		main()
 		Material::init_default_texture();
 		Material::init_default_texture_normal();
 
-		obj_loader("./ground/ground.obj", world, materials);
+
 
 		shared_ptr<Model>	model = make_shared<Model>();
 		world.add_child(model);
+
+
 
 		#ifdef BOX
 		obj_loader("./box/box.obj", *model, materials);
 		#endif
 
 		#ifdef SONA
-		obj_loader("./sona/cloth.obj", *model, materials);
-		obj_loader("./sona/skin.obj", *model, materials);
-		obj_loader("./sona/hair.obj", *model, materials);
-		obj_loader("./sona/weapon.obj", *model, materials);
+		//obj_loader("./sona/cloth.obj", *model, materials);
+		//obj_loader("./sona/skin.obj", *model, materials);
+		//obj_loader("./sona/hair.obj", *model, materials);
+		//obj_loader("./sona/weapon.obj", *model, materials);
+
+		model->add_child(assimp_loader("./sona/cloth.obj", materials));
+		model->add_child(assimp_loader("./sona/skin.obj", materials));
+		model->add_child(assimp_loader("./sona/hair.obj", materials));
+		model->add_child(assimp_loader("./sona/weapon.obj", materials));
+
 		#endif
 
 
 		#ifdef BIGBOY
-		obj_loader("../../sources/big_boy/big_boy.obj", *model, materials);
+		model->add_child(assimp_loader("../../sources/big_boy/big_boy.obj", materials));
 		#endif
 
 		#ifdef STAR
-		obj_loader("../../sources/starpolis/starpolis_1.obj", *model, materials);
-		light.set_position(vec3(0, 1000000, 0));
-		light.strength = 1;
+		model->add_child(assimp_loader("../../sources/starpolis/starpolis.obj", materials));
+		light.set_position(vec3(0, 100000, 0));
+		light.strength = 300000;
 		#endif
+		
+		#ifdef PACK
+		model->add_child(assimp_loader("./backpack/backpack.obj", materials));
+		light.set_position(vec3(0, 1000, 0));
+		light.strength = 1000;
+		#endif
+
+		#ifdef WALKING_MAN
+		model->add_child(assimp_loader("../../sources/walking_man/rp_nathan_animated_003_walking.fbx", materials));
+		light.set_position(vec3(0, 0, 1000));
+		light.strength = 1000;
+		#endif
+
+		#ifdef CLOCK
+		model->add_child(assimp_loader("../../sources/clock/clock3.obj", materials));
+		light.set_position(vec3(0, 0, 1000));
+		light.strength = 1000;
+		#endif
+
+		#ifdef HOUSE
+		model->add_child(assimp_loader("../../sources/house/house.3ds", materials));
+		light.set_position(vec3(0, 100000, 100000));
+		light.strength = 200000;
+		#endif
+
+		#ifdef GROUND
+		obj_loader("./ground/ground.obj", world, materials);
+		#endif
+
 		float	model_size = get_model_size(*model);
 		window.model_size = model_size;
 
+		#ifdef UP_Z
 		Camera		camera(
 						vec3(0, -model_size * 2, model_size / 2),
-						vec3(0, 1, 0), vec3(0, 0, 1),
+						FRONT, 
+						UP,
+						pi<float>() / 2,
+						16.0f/9,
+						model_size * 10,
+						model_size * 0.001
+					);
+		#else
+		Camera		camera(
+						vec3(0, model_size / 2, model_size * 2),
+						FRONT, 
+						UP,
 						pi<float>() / 3,
 						16.0f/9,
 						model_size * 10,
 						model_size * 0.001
 					);
+		#endif
 
 		renderer.camera = &camera;
 		renderer.light = &light;

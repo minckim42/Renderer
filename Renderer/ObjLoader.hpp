@@ -4,7 +4,6 @@
 #include <map>
 #include <unordered_map>
 #include <map>
-#include <stb_image.h>
 #include "Material.hpp"
 #include "Model.hpp"
 
@@ -140,5 +139,4 @@ class MtlLoader
 
 ##############################################################################*/
 
-unsigned int		image_loader(const std::string& path);
 void				obj_loader(const std::string& path, Model& model, MaterialContainer& materials);

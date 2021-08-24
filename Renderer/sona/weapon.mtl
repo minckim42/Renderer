@@ -1,11 +1,9 @@
 # Rhino
 newmtl weapon
-Ka 0.9000 0.9000 0.9000
+Ka 0.8980 0.8980 0.8980
 Kd 0.2000 0.2000 0.2000
-Ks 2.5000 2.5000 2.5000
+Ks 0.9804 0.9804 0.9804
 Tf 0.0000 0.0000 0.0000
 d 1.0000
 Ns 0.0000
 map_Kd weapon.png
-# map_Ks weapon.png
-# map_Bump nr_1.png

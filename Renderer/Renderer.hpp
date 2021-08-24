@@ -1,5 +1,4 @@
 #pragma once
-#include <unordered_map>
 #include "Model.hpp"
 #include "Light.hpp"
 #include "Camera.hpp"
@@ -10,8 +9,6 @@
 	Renderer
 
 ##############################################################################*/
-
-typedef std::unordered_map<std::string, Material>	MaterialContainer;
 
 class Renderer
 {
