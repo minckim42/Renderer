@@ -136,10 +136,10 @@ class Window: public WindowGlfw
 // #define BOX
 // #define SONA
 // #define STAR
-// #define CLOCK
+#define CLOCK
 // #define WALKING_MAN
 // #define PACK
-#define HOUSE
+// #define HOUSE
 
 // #define GROUND
 
