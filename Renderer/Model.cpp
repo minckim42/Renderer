@@ -33,7 +33,8 @@ Model::Model(Mesh&& mesh)
 
 void				Model::draw(Shader& shader, glm::mat4& world)
 {
-	mat4	current = matrix * world;
+	//mat4	current = matrix * world;
+	mat4	current = world * matrix;
 	for (Mesh& mesh : meshes)
 	{
 		mesh.draw(shader, current);

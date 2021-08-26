@@ -15,7 +15,7 @@ using namespace glm;
 // #define ROTATE
 
 
-#define UP_Z
+// #define UP_Z
 
 #ifdef UP_Z
 # define FRONT vec3(0, 1, 0)
@@ -38,6 +38,7 @@ class Window: public WindowGlfw
 	Renderer*	renderer;
 	float		model_size;
 	float		speed;
+	float		rot_speed;
 	
 	chrono::system_clock::time_point	prev;
 
@@ -45,12 +46,13 @@ class Window: public WindowGlfw
 	Window(int width, int height, const std::string& name):
 		WindowGlfw(width, height, name),
 		prev(chrono::system_clock::now()),
-		speed(1)
+		speed(1),
+		rot_speed(1)
 	{}
 
 	bool		work()
 	{
-		glClearColor(0.0, 0.0, 0.0, 1);
+		glClearColor(0.2, 0.2, 0.2, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		key_process();
 		#ifdef ROTATE
@@ -65,7 +67,7 @@ class Window: public WindowGlfw
 		chrono::duration<float>	interval(chrono::system_clock::now() - prev);
 
 		float	len = model_size * 0.001 * interval.count() * speed;
-		float	rad = 0.0005 * interval.count();
+		float	rad = 0.0009 * interval.count() * rot_speed;
 		if (glfwGetKey(get_window(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		{
 			glfwSetWindowShouldClose(get_window(), true);
@@ -122,6 +124,18 @@ class Window: public WindowGlfw
 			speed *= 1.1;
 			cout << speed << endl;
 		}
+		if (glfwGetKey(get_window(), GLFW_KEY_O) == GLFW_PRESS)
+		{
+			rot_speed /= 1.1;
+			if (speed < 0.0000001)
+				speed = 0.0000001;
+			cout << speed << endl;
+		}
+		if (glfwGetKey(get_window(), GLFW_KEY_P) == GLFW_PRESS)
+		{
+			rot_speed *= 1.1;
+			cout << speed << endl;
+		}
 		renderer->camera->update_view();
 
 		// cout << to_string(renderer->camera->get_position()) << endl;
@@ -136,10 +150,12 @@ class Window: public WindowGlfw
 // #define BOX
 // #define SONA
 // #define STAR
-#define CLOCK
-// #define WALKING_MAN
+// #define CLOCK
+#define WALKING_MAN
 // #define PACK
 // #define HOUSE
+// #define CYBORG
+// #define VAMPIRE
 
 // #define GROUND
 
@@ -203,7 +219,7 @@ int		main()
 		#endif
 		
 		#ifdef PACK
-		model->add_child(assimp_loader("./backpack/backpack.obj", materials));
+		model->add_child(assimp_loader("../../sources/backpack/backpack.obj", materials));
 		light.set_position(vec3(0, 1000, 0));
 		light.strength = 1000;
 		#endif
@@ -224,6 +240,18 @@ int		main()
 		model->add_child(assimp_loader("../../sources/house/house.3ds", materials));
 		light.set_position(vec3(0, 100000, 100000));
 		light.strength = 200000;
+		#endif
+
+		#ifdef CYBORG
+		model->add_child(assimp_loader("../../sources/cyborg/cyborg.obj", materials));
+		light.set_position(vec3(0, 100000, 100000));
+		light.strength = 200000;
+		#endif
+
+		#ifdef VAMPIRE
+		model->add_child(assimp_loader("../../sources/vampire/dancing_vampire.dae", materials));
+		light.set_position(vec3(0, 10000, 10000));
+		light.strength = 20000;
 		#endif
 
 		#ifdef GROUND
