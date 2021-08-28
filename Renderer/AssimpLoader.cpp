@@ -3,26 +3,89 @@
 using namespace std;
 using namespace glm;
 
+
+shared_ptr<Model>	process_node(
+						aiNode*				node,
+						const aiScene*		scene,
+						const string&		directory,
+						MaterialContainer&	materials
+					);
+Mesh				process_mesh(
+						aiMesh*				assimp_mesh,
+						const aiScene*		scene,
+						const string&		directory,
+						MaterialContainer&	materials
+					);
+void				load_texture_type(
+						aiMaterial* 		assimp_material,
+						aiTextureType 		type,
+						const string& 		directory,
+						Material&			material
+					);
+
+
 //------------------------------------------------------------------------------
+
+#include <iostream>
 
 shared_ptr<Model>	assimp_loader(const string& path, MaterialContainer& materials)
 {
 	Assimp::Importer	importer;
 
 	const aiScene*		scene = importer.ReadFile(
-									path
-									, aiProcess_Triangulate 
-									| aiProcess_GenSmoothNormals 
-									| aiProcess_FlipUVs 
-									| aiProcess_CalcTangentSpace
+									path, 
+									aiProcess_Triangulate | 
+									aiProcess_GenSmoothNormals | 
+									aiProcess_FlipUVs | 
+									aiProcess_CalcTangentSpace
 								);
+	if (!scene)
+		throw string("Failed to open model file: ") + path + "(scene == nullptr)";
+	if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)
+		throw string("Failed to open model file: ") + path + "(AI_SCENE_FLAG_IMCOMPLETE)";
+	if (!scene->mRootNode)
+		throw string("Failed to open model file: ") + path + "(Root node dosen't exist)";
+
 	const string		directory = path.substr(0, path.find_last_of('/'));
+
+	for (uint i = 0 ; i < scene->mNumMeshes ; i++)
+	{
+		aiMesh*			a_mesh = scene->mMeshes[i];
+		aiAnimation*	a_ani = scene->mAnimations[i];
+		for (uint j = 0 ; j < a_mesh->mNumBones ; j++)
+		{
+			// aiBone*		a_bone = a_mesh->mBones[j];
+			aiNodeAnim*	a_channel = a_ani->mChannels[j];
+			for (uint k = 0 ; k < a_channel->mNumPositionKeys ; k++)
+			{
+				cout << a_channel->mPositionKeys[k].mTime << endl;
+			}
+			cout << endl;
+		}
+
+	}
+
 	return process_node(scene->mRootNode, scene, directory, materials);
 }
 
 //------------------------------------------------------------------------------
 
-shared_ptr<Model>	process_node(aiNode* node, const aiScene* scene, const string& directory, MaterialContainer& materials)
+mat4				aiMat_to_mat(const aiMatrix4x4& mat)
+{
+	return mat4(
+		mat.a1, mat.b1, mat.c1, mat.d1,
+		mat.a2, mat.b2, mat.c2, mat.d2,
+		mat.a3, mat.b3, mat.c3, mat.d3,
+		mat.a4, mat.b4, mat.c4, mat.d4
+	);
+}
+
+shared_ptr<Model>	process_node(
+						aiNode*				node,
+						const aiScene*		scene,
+						const string&		directory,
+						MaterialContainer&	materials
+					)
 {
 	shared_ptr<Model>	model = make_shared<Model>();
 	for (unsigned int i = 0 ; i < node->mNumMeshes ; i++)
@@ -31,10 +94,13 @@ shared_ptr<Model>	process_node(aiNode* node, const aiScene* scene, const string&
 		model->meshes.emplace_back(process_mesh(assimp_mesh, scene, directory, materials));
 		model->meshes.back().set_buffer();
 	}
+	cout << "model  " << ": " << node->mNumMeshes << endl;
+	cout << node->mName.C_Str() << endl;
 	for (unsigned int i = 0 ; i < node->mNumChildren ; i++)
 	{
 		model->add_child(process_node(node->mChildren[i], scene, directory, materials));
 	}
+	model->matrix = aiMat_to_mat(node->mTransformation);
 	return model;
 }
 
@@ -49,7 +115,12 @@ static void	put_color(aiColor3D& ai_color, vec3& color)
 
 //------------------------------------------------------------------------------
 
-Mesh				process_mesh(aiMesh* assimp_mesh, const aiScene* scene, const string& directory, MaterialContainer& materials)
+Mesh				process_mesh(
+						aiMesh*				assimp_mesh,
+						const aiScene*		scene,
+						const string&		directory,
+						MaterialContainer&	materials
+					)
 {
 	Mesh	mesh;
 
@@ -130,7 +201,12 @@ Mesh				process_mesh(aiMesh* assimp_mesh, const aiScene* scene, const string& di
 
 //------------------------------------------------------------------------------
 
-void			load_texture_type(aiMaterial* assimp_material, aiTextureType type, const string& directory, Material& material)
+void				load_texture_type(
+						aiMaterial* 	assimp_material,
+						aiTextureType 	type,
+						const string& 	directory,
+						Material&		material
+					)
 {
 	unsigned int	num = assimp_material->GetTextureCount(type);
 	unsigned int*	id;

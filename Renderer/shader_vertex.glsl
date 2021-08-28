@@ -8,7 +8,6 @@ layout (location = 4) in vec3 tan_y;	// bi_tangent
 
 
 out vec2	vs_tex_coords;
-out vec3	vs_normal;
 out vec3	vs_position;
 out mat3	mat_face;
 
@@ -21,7 +20,6 @@ void main()
 	vs_tex_coords = tex_coord;    
 	gl_Position = projection * (view * (model * vec4(position, 1)));
 
-	vs_normal = mat3(model) * vec3(normal);
 	vs_position = mat3(model) * vec3(position);
 
 	mat_face = mat3(model) * mat3(tan_x, tan_y, normal);
