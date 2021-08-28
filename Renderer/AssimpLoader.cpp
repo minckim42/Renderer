@@ -47,6 +47,24 @@ shared_ptr<Model>	assimp_loader(const string& path, MaterialContainer& materials
 		throw string("Failed to open model file: ") + path + "(Root node dosen't exist)";
 
 	const string		directory = path.substr(0, path.find_last_of('/'));
+
+	for (uint i = 0 ; i < scene->mNumMeshes ; i++)
+	{
+		aiMesh*			a_mesh = scene->mMeshes[i];
+		aiAnimation*	a_ani = scene->mAnimations[i];
+		for (uint j = 0 ; j < a_mesh->mNumBones ; j++)
+		{
+			// aiBone*		a_bone = a_mesh->mBones[j];
+			aiNodeAnim*	a_channel = a_ani->mChannels[j];
+			for (uint k = 0 ; k < a_channel->mNumPositionKeys ; k++)
+			{
+				cout << a_channel->mPositionKeys[k].mTime << endl;
+			}
+			cout << endl;
+		}
+
+	}
+
 	return process_node(scene->mRootNode, scene, directory, materials);
 }
 
@@ -75,20 +93,14 @@ shared_ptr<Model>	process_node(
 		aiMesh*		assimp_mesh = scene->mMeshes[node->mMeshes[i]];
 		model->meshes.emplace_back(process_mesh(assimp_mesh, scene, directory, materials));
 		model->meshes.back().set_buffer();
-		if (assimp_mesh->HasBones())
-		{
-			//model->meshes.back().matrix = aiMat_to_mat(assimp_mesh->mBones[0]->mOffsetMatrix);
-			//cout << to_string(model->meshes.back().matrix) << endl;
-		}
-		cout << "mesh" << endl;
 	}
+	cout << "model  " << ": " << node->mNumMeshes << endl;
+	cout << node->mName.C_Str() << endl;
 	for (unsigned int i = 0 ; i < node->mNumChildren ; i++)
 	{
 		model->add_child(process_node(node->mChildren[i], scene, directory, materials));
-		model->matrix = aiMat_to_mat(node->mTransformation);
-		cout << to_string(model->matrix) << endl;
-		cout << "model" << endl;
 	}
+	model->matrix = aiMat_to_mat(node->mTransformation);
 	return model;
 }
 

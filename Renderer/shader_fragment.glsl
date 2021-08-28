@@ -1,7 +1,6 @@
 #version 430 core
 out vec4	FragColor;
 in vec2		vs_tex_coords;
-in vec3		vs_normal;
 in vec3		vs_position;
 in mat3		mat_face;
 
@@ -22,9 +21,8 @@ uniform vec3		ks;
 
 void main()
 {
-	vec3	normal_tr = (mat_face * ((texture(tex_normal, vs_tex_coords).xyz * 2 - 1)));
+	vec3	normal_tr = normalize(mat_face * ((texture(tex_normal, vs_tex_coords).xyz * 2 - 1)));
 	// vec3	normal_tr = normalize(mat_face * vec3(0, 0, 1));
-	// vec3	normal_tr = vs_normal;
 	// vec3	normal_tr = mat_face * vec3(0, 1, 0);
 
 	vec3	light_dir = light_position - vs_position;

@@ -12,7 +12,7 @@ using namespace std;
 using namespace glm;
 
 
-// #define ROTATE
+ #define ROTATE
 
 
 // #define UP_Z
@@ -47,7 +47,9 @@ class Window: public WindowGlfw
 		WindowGlfw(width, height, name),
 		prev(chrono::system_clock::now()),
 		speed(1),
-		rot_speed(1)
+		rot_speed(1),
+		model_size(1),
+		renderer(0)
 	{}
 
 	bool		work()
@@ -151,11 +153,12 @@ class Window: public WindowGlfw
 // #define SONA
 // #define STAR
 // #define CLOCK
-#define WALKING_MAN
+// #define WALKING_MAN
 // #define PACK
 // #define HOUSE
 // #define CYBORG
 // #define VAMPIRE
+#define DRAGON
 
 // #define GROUND
 
@@ -173,9 +176,7 @@ int		main()
 		renderer.shader.link_shader_program();
 		window.renderer = &renderer;
 
-		Light		light;
-		light.set_position(vec3(5000, 0, 0));
-		light.strength = 5000;
+
 
 		Model				world;
 
@@ -214,44 +215,35 @@ int		main()
 
 		#ifdef STAR
 		model->add_child(assimp_loader("../../sources/starpolis/starpolis.obj", materials));
-		light.set_position(vec3(0, 100000, 0));
-		light.strength = 300000;
 		#endif
 		
 		#ifdef PACK
 		model->add_child(assimp_loader("../../sources/backpack/backpack.obj", materials));
-		light.set_position(vec3(0, 1000, 0));
-		light.strength = 1000;
 		#endif
 
 		#ifdef WALKING_MAN
+		//  model->add_child(assimp_loader("../../sources/pose_b/Pose_B.fbx", materials));
 		model->add_child(assimp_loader("../../sources/walking_man/rp_nathan_animated_003_walking.fbx", materials));
-		light.set_position(vec3(0, 0, 1000));
-		light.strength = 1000;
 		#endif
 
 		#ifdef CLOCK
 		model->add_child(assimp_loader("../../sources/clock/clock3.obj", materials));
-		light.set_position(vec3(0, 0, 1000));
-		light.strength = 1000;
 		#endif
 
 		#ifdef HOUSE
 		model->add_child(assimp_loader("../../sources/house/house.3ds", materials));
-		light.set_position(vec3(0, 100000, 100000));
-		light.strength = 200000;
 		#endif
 
 		#ifdef CYBORG
 		model->add_child(assimp_loader("../../sources/cyborg/cyborg.obj", materials));
-		light.set_position(vec3(0, 100000, 100000));
-		light.strength = 200000;
 		#endif
 
 		#ifdef VAMPIRE
 		model->add_child(assimp_loader("../../sources/vampire/dancing_vampire.dae", materials));
-		light.set_position(vec3(0, 10000, 10000));
-		light.strength = 20000;
+		#endif
+
+		#ifdef DRAGON
+		model->add_child(assimp_loader("../../sources/dragon/Dragon_Baked_Actions_fbx_7.4_binary.fbx", materials));
 		#endif
 
 		#ifdef GROUND
@@ -278,10 +270,17 @@ int		main()
 						UP,
 						pi<float>() / 3,
 						16.0f/9,
-						model_size * 10,
+						model_size * 100,
 						model_size * 0.001
 					);
 		#endif
+
+
+
+		Light		light;
+		light.set_position((-FRONT + UP) * model_size * 3);
+		light.strength = model_size * 4.5;
+
 
 		renderer.camera = &camera;
 		renderer.light = &light;

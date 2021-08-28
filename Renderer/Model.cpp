@@ -33,7 +33,6 @@ Model::Model(Mesh&& mesh)
 
 void				Model::draw(Shader& shader, glm::mat4& world)
 {
-	//mat4	current = matrix * world;
 	mat4	current = world * matrix;
 	for (Mesh& mesh : meshes)
 	{
@@ -104,10 +103,10 @@ shared_ptr<Model>	Model::copy()
 }
 
 //------------------------------------------------------------------------------
-
+#include <iostream>
 pair<vec3, vec3>	Model::get_bounding_box()
 {
-	pair<vec3, vec3>	result(vec3(10000000, 10000000, 10000000), vec3(-10000000, -10000000, -10000000));
+	pair<vec3, vec3>	result(vec3(0, 0, 0), vec3(-0, -0, -0));
 
 
 	vec3&				vec_min = result.first;
@@ -115,6 +114,8 @@ pair<vec3, vec3>	Model::get_bounding_box()
 	for (Mesh& mesh : meshes)
 	{
 		pair<vec3, vec3>	tmp = mesh.get_bounding_box();
+		// tmp.first = (matrix * vec4(tmp.first, 1));
+		// tmp.second = (matrix * vec4(tmp.second, 1));
 		for (int i = 0 ; i < 3 ; i++)
 		{
 			vec_min[i] = tmp.first[i] < vec_min[i] ? tmp.first[i] : vec_min[i];
@@ -124,6 +125,8 @@ pair<vec3, vec3>	Model::get_bounding_box()
 	for (shared_ptr<Model> model : children)
 	{
 		pair<vec3, vec3>	tmp = model->get_bounding_box();
+		tmp.first = (matrix * vec4(tmp.first, 1));
+		tmp.second = (matrix * vec4(tmp.second, 1));
 		for (int i = 0 ; i < 3 ; i++)
 		{
 			vec_min[i] = tmp.first[i] < vec_min[i] ? tmp.first[i] : vec_min[i];
