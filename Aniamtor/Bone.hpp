@@ -1,37 +1,54 @@
+#pragma once
+#include "Animation.hpp"
 #include <glm/glm.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/ext.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include <algorithm>
 #include <vector>
+#include <memory>
+
+/*##############################################################################
+
+	Bone
+
+##############################################################################*/
 
 class Bone
 {
+	/*=========================================
+		Types
+	=========================================*/
 	public:
-	typedef unsigned int	uint;
-
-	std::vector<glm::vec3>	position_keys;
-	std::vector<double>		position_time;
-	std::vector<glm::quat>	rotation_keys;
-	std::vector<double>		rotation_time;
-	std::vector<glm::vec3>	scale_keys;
-	std::vector<double>		scale_time;
+	typedef unsigned int			uint;
+	typedef std::shared_ptr<Bone>	ptr;
+	
+	/*=========================================
+		Members
+	=========================================*/
+	public:
+	std::vector<Animation>	animations;
 	std::vector<glm::mat4>&	matrices;
 	uint					idx_mat;
 	glm::mat4				offset;
-	std::vector<Bone*>		children;
+	glm::mat4				world_inverse;
+	std::vector<Bone::ptr>	children;
+	// uint					idx_child;
+
+	/*=========================================
+		Constructor
+	=========================================*/
+	public:
+	Bone(std::vector<glm::mat4>& matrices, const glm::mat4& offset);
+
+	/*=========================================
+		Methods
+	=========================================*/
+	public:
+	void		set_matrix(uint animation_id, const glm::mat4& prev, double time);
+	glm::mat4&	matrix();
 
 	private:
-	void		set_matrix(
-					const glm::vec3& parent_position,
-					const glm::quat& parent_rotation,
-					const glm::vec3& parent_scale,
-					double time);
-	glm::vec3	interpolate_vector_key(
-					std::vector<glm::vec3>&	keys,
-					std::vector<double>&	times,
-					double					time);
-	glm::quat	interpolate_quat_key(
-					std::vector<glm::quat>&	keys,
-					std::vector<double>&	times,
-					double					time);
+
+
 };
