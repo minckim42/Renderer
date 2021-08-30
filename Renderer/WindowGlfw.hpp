@@ -3,7 +3,6 @@
 #include <GLFW/glfw3.h>
 #include <string>
 #include "common.hpp"
-#include "RendererBase.hpp"
 
 /*##############################################################################
 

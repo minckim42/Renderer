@@ -48,21 +48,14 @@ shared_ptr<Model>	assimp_loader(const string& path, MaterialContainer& materials
 
 	const string		directory = path.substr(0, path.find_last_of('/'));
 
-	for (uint i = 0 ; i < scene->mNumMeshes ; i++)
+	for (uint i = 0; i < scene->mNumAnimations; i++)
 	{
-		aiMesh*			a_mesh = scene->mMeshes[i];
-		aiAnimation*	a_ani = scene->mAnimations[i];
-		for (uint j = 0 ; j < a_mesh->mNumBones ; j++)
+		cout << scene->mAnimations[i]->mName.C_Str() << endl;
+		for (uint j = 0; j < scene->mAnimations[i]->mNumChannels; j++)
 		{
-			// aiBone*		a_bone = a_mesh->mBones[j];
-			aiNodeAnim*	a_channel = a_ani->mChannels[j];
-			for (uint k = 0 ; k < a_channel->mNumPositionKeys ; k++)
-			{
-				cout << a_channel->mPositionKeys[k].mTime << endl;
-			}
-			cout << endl;
+			cout << scene->mAnimations[i]->mChannels[j]->mNodeName.C_Str() << endl;
 		}
-
+		cout << endl;
 	}
 
 	return process_node(scene->mRootNode, scene, directory, materials);
@@ -93,9 +86,17 @@ shared_ptr<Model>	process_node(
 		aiMesh*		assimp_mesh = scene->mMeshes[node->mMeshes[i]];
 		model->meshes.emplace_back(process_mesh(assimp_mesh, scene, directory, materials));
 		model->meshes.back().set_buffer();
+
+		cout << "mesh name" << assimp_mesh->mName.C_Str() << endl;
+		cout << "n vertice"  << assimp_mesh->mNumVertices << endl;
+		for (unsigned int j = 0; j < assimp_mesh->mNumBones; j++)
+		{
+			cout << "bone name: " << assimp_mesh->mBones[j]->mName.C_Str()
+				<< " " << assimp_mesh->mBones[j]->mNumWeights << endl;
+		}
+		cout << endl;
 	}
-	cout << "model  " << ": " << node->mNumMeshes << endl;
-	cout << node->mName.C_Str() << endl;
+	cout << "node name: "  << node->mName.C_Str() << endl;
 	for (unsigned int i = 0 ; i < node->mNumChildren ; i++)
 	{
 		model->add_child(process_node(node->mChildren[i], scene, directory, materials));

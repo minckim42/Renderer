@@ -7,74 +7,41 @@ using namespace glm;
 
 //------------------------------------------------------------------------------
 
-static
-uint	binary_search(vector<double> times, double value)
+Bone::Bone(vector<glm::mat4>& matrices, const glm::mat4& offset):
+	matrices(matrices), offset(offset)
 {
-	uint	left = 0;
-	uint	right = times.size();
-	double*	data = times.data();
+	idx_mat = matrices.size();
+	matrices.emplace_back();
+}
 
-	while (right - left != 1)
+
+//------------------------------------------------------------------------------
+
+void	Bone::set_matrix(uint animation_id, const mat4& prev, double time)
+{
+	matrix() = prev * offset * animations[animation_id].interpolate(time);
+	for (Bone::ptr  child : children)
 	{
-		uint	mid = (left + right) / 2;
-		if (data[mid] < value)
-		{
-			left = mid;
-		}
-		else
-		{
-			right = mid;
-		}
+		child->set_matrix(animation_id, matrix(), time);
 	}
-	return left;
+	matrix() *= world_inverse;
 }
 
 //------------------------------------------------------------------------------
 
-void	Bone::set_matrix(
-			const vec3&	parent_position,
-			const quat&	parent_rotation,
-			const vec3&	parent_scale,
-			double 		time)
-{
-	quat	rotation = parent_rotation 
-					* interpolate_quat_key(rotation_keys, rotation_time, time);
-	vec3	position = parent_position 
-					+ interpolate_vector_key(position_keys, position_time, time);
-	vec3	scale = parent_scale 
-					+ interpolate_vector_key(scale_keys, scale_time, time);
-	// matrices[idx_mat] = rotate(rotation)
+// mat4	Bone::local_transform(vec3& position, quat& rotation, vec3& scale)
+// {
+// 	mat4	result(1.0);
 	
-}
+// }
 
 //------------------------------------------------------------------------------
 
-vec3	Bone::interpolate_vector_key(vector<vec3>& keys, vector<double>& times, double time)
+
+
+//------------------------------------------------------------------------------
+
+mat4&	Bone::matrix()
 {
-	if (time >= times.back())
-	{
-		return keys.back();
-	}
-	uint	idx = binary_search(times, time);
-	vec3&	a = keys[idx];
-	vec3&	b = keys[idx + 1];
-	double	factor = (time - times[idx]) / (times[idx + 1] - times[idx]);
-	return mix(a, b, factor);
+	return (matrices)[idx_mat];
 }
-
-//------------------------------------------------------------------------------
-
-quat	Bone::interpolate_quat_key(vector<quat>& keys, vector<double>& times, double time)
-{
-	if (time >= times.back())
-	{
-		return keys.back();
-	}
-	uint	idx = binary_search(times, time);
-	quat&	a = keys[idx];
-	quat&	b = keys[idx + 1];
-	double	factor = (time - times[idx]) / (times[idx + 1] - times[idx]);
-	return mix(a, b, factor);
-}
-
-//------------------------------------------------------------------------------

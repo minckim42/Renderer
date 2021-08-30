@@ -143,14 +143,31 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AnimationData.hpp" />
+    <ClInclude Include="..\Renderer\Camera.hpp" />
+    <ClInclude Include="..\Renderer\Light.hpp" />
+    <ClInclude Include="..\Renderer\Material.hpp" />
+    <ClInclude Include="..\Renderer\WindowGlfw.hpp" />
+    <ClInclude Include="Animation.hpp" />
+    <ClInclude Include="AssimpLoader.hpp" />
     <ClInclude Include="Bone.hpp" />
+    <ClInclude Include="Material.hpp" />
     <ClInclude Include="Mesh.hpp" />
     <ClInclude Include="Model.hpp" />
+    <ClInclude Include="Shader.hpp" />
     <ClInclude Include="Vertex.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\glad.c" />
+    <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="AssimpLoader.cpp" />
     <ClCompile Include="Bone.cpp" />
+    <ClCompile Include="Material.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="StbImage.cpp" />
+    <ClCompile Include="Tester.cpp" />
+    <ClCompile Include="Vertex.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
