@@ -1,6 +1,10 @@
 #include "AssimpLoader.hpp"
 
 
+#include <iostream>
+
+
+
 using namespace std;
 using namespace glm;
 
@@ -18,18 +22,19 @@ Model::ptr	AssimpLoader::process_node(aiNode* node)
 {
 	Model::ptr		model = make_shared<Model>();
 
+
+	model->offset = ai_to_glm(node->mTransformation);
 	model->meshes.reserve(node->mNumMeshes);
 	for (uint i = 0 ; i < node->mNumMeshes ; i++)
 	{
-		model->meshes.emplace_back(
-			process_mesh(scene->mMeshes[node->mMeshes[i]])
-			
-			);
+		model->meshes.emplace_back(process_mesh(scene->mMeshes[node->mMeshes[i]]));
 	}
+	model->children.reserve(node->mNumChildren);
 	for (uint i = 0 ; i < node->mNumChildren ; i++)
 	{
 		model->children.emplace_back(process_node(node->mChildren[i]));
 	}
+	return model;
 }
 
 //------------------------------------------------------------------------------
@@ -40,11 +45,14 @@ Mesh::ptr	AssimpLoader::process_mesh(aiMesh* assimp_mesh)
 
 	set_vertex(assimp_mesh, *mesh);
 	set_face(assimp_mesh, *mesh);
+	mesh->set_tangents();
 	set_material(assimp_mesh, *mesh);
 	if (assimp_mesh->HasBones())
 	{
 		set_bone(assimp_mesh, *mesh);
 	}
+	mesh->set_buffer();
+	return mesh;
 }
 
 //------------------------------------------------------------------------------
@@ -66,6 +74,8 @@ void		AssimpLoader::set_vertex(aiMesh* assimp_mesh, Mesh& mesh)
 			vertex.tex_coord = vec2(
 				assimp_mesh->mTextureCoords[0][i].x,
 				assimp_mesh->mTextureCoords[0][i].y);
+			vertex.tangent = ai_to_glm(assimp_mesh->mTangents[i]);
+			vertex.bi_tangent = ai_to_glm(assimp_mesh->mBitangents[i]);
 		}
 	}
 }
@@ -87,9 +97,23 @@ void		AssimpLoader::set_face(aiMesh* assimp_mesh, Mesh& mesh)
 
 void		AssimpLoader::set_bone(aiMesh* assimp_mesh, Mesh& mesh)
 {
-	map<std::string, aiBone*>	bone_map = init_bone_map(assimp_mesh);
+	map<string, aiBone*>	bone_map = init_bone_map(assimp_mesh);
 	mat4	ident(1.0f);
-	mesh.bone = create_bone(scene->mRootNode, bone_map, mesh, ident);
+
+	aiNode*	armature = scene->mRootNode->mChildren[0];
+	mesh.bone = make_shared<Bone>(mesh.matrices, mat4(1.0));
+	mesh.bone->world_inverse = mat4(1.0);
+	mesh.bone_map.emplace("Armature", mesh.bone);
+	for (uint i = 0 ; i < armature->mNumChildren ; i++)
+	{
+		if (bone_map.find(armature->mChildren[i]->mName.C_Str()) == bone_map.end())
+			continue ;
+		mesh.bone->children.emplace_back(
+			create_bone(armature->mChildren[i], bone_map, mesh, mat4(1.0)));
+	}
+
+
+	// mesh.bone = create_bone(scene->mRootNode->mChildren[0], bone_map, mesh, ident);
 	// for each animation
 	for (uint i = 0 ; i < scene->mNumAnimations ; i++)
 	{
@@ -133,21 +157,29 @@ Bone::ptr	AssimpLoader::create_bone(
 				aiNode* 				node,
 				map<string, aiBone*> 	bone_map,
 				Mesh& 					mesh,
-				mat4& 					prev_inverse)
+				mat4 					prev_inverse)
 {
 	aiBone*		assimp_bone = bone_map[node->mName.C_Str()];
 	mat4		offset = ai_to_glm(assimp_bone->mOffsetMatrix);
 	Bone::ptr	bone = make_shared<Bone>(mesh.matrices, offset);
 
 	bone->world_inverse = inverse(offset) * prev_inverse;
-
-	bone->children.reserve(node->mNumChildren);
+	
+	
+	
+	// cout << to_string(prev_inverse) << endl;
+	// cout << to_string(inverse(offset)) << endl;
+	// cout << to_string(bone->world_inverse) << endl;
+	
+	
+	
 	for (uint i = 0 ; i < assimp_bone->mNumWeights ; i++)
 	{
 		mesh.vertices[assimp_bone->mWeights[i].mVertexId].add_weight(
 			bone->idx_mat, assimp_bone->mWeights[i].mWeight);
 	}
 
+	bone->children.reserve(node->mNumChildren);
 	for (uint i = 0 ; i < node->mNumChildren ; i++)
 	{
 		if (bone_map.find(node->mChildren[i]->mName.C_Str()) == bone_map.end())
@@ -196,7 +228,7 @@ void	AssimpLoader::set_material(aiMesh* assimp_mesh, Mesh& mesh)
 std::map<std::string, aiBone*>		AssimpLoader::init_bone_map(aiMesh* mesh)
 {
 	map<string, aiBone*>	bone_map;
-	for (uint i = 0 ; mesh->mNumBones ; i++)
+	for (uint i = 0 ; i < mesh->mNumBones ; i++)
 	{
 		bone_map[mesh->mBones[i]->mName.C_Str()] = mesh->mBones[i];
 	}
@@ -277,9 +309,7 @@ Model::ptr	assimp_loader(const string& path)
 		throw string("Failed to open model file: ") + path + "(Root node dosen't exist)";
 
 	AssimpLoader		loader(scene, path.substr(0, path.find_last_of('/')));
-	
-	
-	
+	return loader.process_node(scene->mRootNode);
 }
 
 //------------------------------------------------------------------------------

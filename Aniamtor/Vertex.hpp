@@ -1,6 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
-#define ANIMATOR_N_BONE_MAX 4
+#define ANIMATOR_N_BONE_MAX 12
 
 struct Vertex
 {
@@ -15,6 +15,7 @@ struct Vertex
 	float		weights[ANIMATOR_N_BONE_MAX];
 
 	Vertex();
+	Vertex(const Vertex& x);
 	virtual	~Vertex()=default;
 
 	void		add_weight(uint idx, float weight);

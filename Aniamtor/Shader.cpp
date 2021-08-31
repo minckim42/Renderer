@@ -114,6 +114,13 @@ void			Shader::set_uniform(const string& name, const mat4& value, bool transpose
 	glUniformMatrix4fv(glGetUniformLocation(program, name.c_str()), 1, transpose, value_ptr(value));
 }
 
+//------------------------------------------------------------------------------
+
+void			Shader::set_uniform(const string& name, const float* value, unsigned int size, bool transpose)
+{
+	glUniformMatrix4fv(glGetUniformLocation(program, name.c_str()), size, transpose, value);
+}
+
 /*=========================================
 	private methods
 =========================================*/

@@ -62,17 +62,18 @@ class Shader
 	=======================================*/
 	
 	public:
-	GLuint				compile_shader(const std::string& path, shader_type type);
-	void				link_shader_program();
-	GLuint				get_program() const;
-	void				use();
-	void				set_uniform(const std::string& name, float value);
-	void				set_uniform(const std::string& name, int value);
-	void				set_uniform(const std::string& name, const glm::vec3& value);
-	void				set_uniform(const std::string& name, const glm::mat3& value, bool transpose = GL_FALSE);
-	void				set_uniform(const std::string& name, const glm::mat4& value, bool transpose = GL_FALSE);
-	
+	GLuint		compile_shader(const std::string& path, shader_type type);
+	void		link_shader_program();
+	GLuint		get_program() const;
+	void		use();
+	void		set_uniform(const std::string& name, float value);
+	void		set_uniform(const std::string& name, int value);
+	void		set_uniform(const std::string& name, const glm::vec3& value);
+	void		set_uniform(const std::string& name, const glm::mat3& value, bool transpose = GL_FALSE);
+	void		set_uniform(const std::string& name, const glm::mat4& value, bool transpose = GL_FALSE);
+	void		set_uniform(const std::string& name, const float* value, unsigned int size, bool transpose = GL_FALSE);
+
 	private:
-	void				check_shader(GLuint shader, shader_type);
-	void				check_program(GLuint program);
+	void		check_shader(GLuint shader, shader_type);
+	void		check_program(GLuint program);
 };
