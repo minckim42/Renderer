@@ -143,31 +143,37 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\Renderer\Camera.hpp" />
     <ClInclude Include="..\Renderer\Light.hpp" />
     <ClInclude Include="..\Renderer\Material.hpp" />
-    <ClInclude Include="..\Renderer\WindowGlfw.hpp" />
     <ClInclude Include="Animation.hpp" />
     <ClInclude Include="AssimpLoader.hpp" />
     <ClInclude Include="Bone.hpp" />
+    <ClInclude Include="Camera.hpp" />
+    <ClInclude Include="Light.hpp" />
     <ClInclude Include="Material.hpp" />
     <ClInclude Include="Mesh.hpp" />
     <ClInclude Include="Model.hpp" />
+    <ClInclude Include="Object.hpp" />
     <ClInclude Include="Shader.hpp" />
     <ClInclude Include="Vertex.hpp" />
+    <ClInclude Include="WindowGlfw.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\glad.c" />
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AssimpLoader.cpp" />
     <ClCompile Include="Bone.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="StbImage.cpp" />
     <ClCompile Include="Tester.cpp" />
     <ClCompile Include="Vertex.cpp" />
+    <ClCompile Include="WindowGlfw.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

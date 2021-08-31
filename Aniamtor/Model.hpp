@@ -5,6 +5,7 @@
 
 #include "Mesh.hpp"
 #include "Material.hpp"
+#include "Shader.hpp"
 
 /*##############################################################################
 
@@ -27,22 +28,22 @@ class Model
 	public:
 	std::vector<Mesh::ptr>	meshes;
 	std::vector<ptr>		children;
+	glm::mat4				offset;
 
 	/*=========================================
 		Constructor
 	=========================================*/
 	public:
 	Model() = default;
-	// Model(const Model& x);
-	// Model(const Mesh& mesh);
+	Model(const Model& x);
+	Model(const Mesh& mesh);
 
 	/*=========================================
 		Methods
 	=========================================*/
 	public:
-	ptr			copy() const;
-	void		add_mesh(const Mesh& mesh);
-	void		add_mesh_emplace(Mesh&& mesh);
+	void		draw(Shader& shader, glm::mat4 world, double time);
+	void		add_mesh(Mesh::ptr mesh);
 	void		add_child(ptr x);
 
 	private:

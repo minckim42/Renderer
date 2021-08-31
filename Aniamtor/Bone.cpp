@@ -1,5 +1,5 @@
 #include "Bone.hpp"
-
+#include <iostream>
 typedef unsigned int		uint;
 
 using namespace std;
@@ -19,12 +19,12 @@ Bone::Bone(vector<glm::mat4>& matrices, const glm::mat4& offset):
 
 void	Bone::set_matrix(uint animation_id, const mat4& prev, double time)
 {
-	matrix() = prev * offset * animations[animation_id].interpolate(time);
+	matrix() = prev * animations[animation_id].interpolate(time) * offset;
 	for (Bone::ptr  child : children)
 	{
 		child->set_matrix(animation_id, matrix(), time);
 	}
-	matrix() *= world_inverse;
+	matrix() = matrix() * world_inverse;
 }
 
 //------------------------------------------------------------------------------

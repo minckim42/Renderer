@@ -2,6 +2,7 @@
 #include <glm/glm.hpp>
 #include "Material.hpp"
 #include "Shader.hpp"
+#include <glad/glad.h>
 
 #include "Bone.hpp"
 #include "Vertex.hpp"
@@ -27,6 +28,8 @@ class Mesh
 	=========================================*/
 	public:
 	uint						vao;
+	uint						vbo;
+	uint						ebo;
 	Material*					material;
 	std::vector<glm::mat4>		matrices;
 	Bone::ptr					bone;
@@ -39,19 +42,22 @@ class Mesh
 		Constructor
 	=========================================*/
 	public:
-	Mesh()=default;
-	Mesh(Mesh& x);
-	Mesh(Mesh&& x);
-
+	Mesh();
+	virtual		~Mesh();
 	/*=========================================
 		Methods
 	=========================================*/
 	public:
 	Mesh			copy() const;
-	void			draw(Shader& shader, double time);
+	void			draw(Shader& shader, glm::mat4 world, double time);
+	void			draw_base(Shader& shader, glm::mat4 world);
 	bool			is_static_model();
+	void			set_buffer();
+	void			set_tangents();
+	void			set_vertex_tangent(uint a, uint b, uint c);
+
 
 	private:
-	void			update_bone(double time);
+	void			update_bone(uint animation_id, glm::mat4 world, double time);
 	void			init_bone(double time);
 };

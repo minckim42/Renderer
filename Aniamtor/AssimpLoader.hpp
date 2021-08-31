@@ -55,7 +55,7 @@ class AssimpLoader
 					aiNode*							node,
 					std::map<std::string, aiBone*>	bone_map,
 					Mesh&							mesh,
-					glm::mat4&						prev_inverse);
+					glm::mat4						prev_inverse);
 	void		load_texture_type(
 					aiMaterial* 		assimp_material,
 					aiTextureType 		type,
