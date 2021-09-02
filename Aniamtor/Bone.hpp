@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <vector>
 #include <memory>
+#include <string>
 
 /*##############################################################################
 
@@ -31,15 +32,21 @@ class Bone
 	std::vector<glm::mat4>&	matrices;
 	uint					idx_mat;
 	glm::mat4				offset;
-	glm::mat4				world_inverse;
+	glm::mat4				world_transform;
 	std::vector<Bone::ptr>	children;
 	// uint					idx_child;
+	std::string				name;
 
 	/*=========================================
 		Constructor
 	=========================================*/
 	public:
-	Bone(std::vector<glm::mat4>& matrices, const glm::mat4& offset);
+	// Bone(std::vector<glm::mat4>& matrices, const glm::mat4& offset);
+	Bone(
+		std::vector<glm::mat4>&	matrices,
+		const glm::mat4&		offset,
+		const glm::mat4&		world_transform,
+		const std::string&		name);
 
 	/*=========================================
 		Methods

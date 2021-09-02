@@ -21,6 +21,7 @@ class Model
 
 	public:
 	typedef std::shared_ptr<Model>	ptr;
+	typedef std::pair<glm::vec3, glm::vec3>		box;
 
 	/*=========================================
 		Members
@@ -45,6 +46,6 @@ class Model
 	void		draw(Shader& shader, glm::mat4 world, double time);
 	void		add_mesh(Mesh::ptr mesh);
 	void		add_child(ptr x);
-
+	box			get_bounding_box();
 	private:
 };

@@ -28,14 +28,23 @@ Vertex::Vertex(const Vertex& x):
 
 void		Vertex::add_weight(unsigned int idx, float weight)
 {
-	// if (bones[ANIMATOR_N_BONE_MAX - 1] != -1)
-	// 	cout << "!!!" << endl;
-	for (uint i = 0 ; i < ANIMATOR_N_BONE_MAX ; i++)
+	if (bones[ANIMATOR_N_BONE_MAX - 1] != -1)
+		return;
+	uint	i = 0;
+	while (bones[i] != -1)
+		++i;
+	bones[i] = idx;
+	weights[i] = weight;
+}
+
+uint		Vertex::get_num_weight()
+{
+	uint	i = 0;
+	while (i < ANIMATOR_N_BONE_MAX)
 	{
-		if (bones[i] != -1)
-			continue;
-		bones[i] = idx;
-		weights[i] = weight;
-		break;
+		if (bones[i] == -1)
+			return i;
+		i++;
 	}
+	return i;
 }

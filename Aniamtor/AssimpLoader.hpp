@@ -31,8 +31,8 @@ class AssimpLoader
 	public:
 	const aiScene*					scene;
 	std::string						directory;
-	Model::ptr						model;
-	std::vector<Mesh>				meshes;
+	// Model::ptr						model;
+	// std::vector<Mesh>				meshes;
 
 
 	/*=========================================
@@ -45,24 +45,24 @@ class AssimpLoader
 		Methods
 	=========================================*/
 	public:
-	Model::ptr	process_node(aiNode* node);
-	Mesh::ptr	process_mesh(aiMesh* assimp_mesh);
-	void		set_vertex(aiMesh* assimp_mesh, Mesh& mesh);
-	void		set_face(aiMesh* assimp_mesh, Mesh& mesh);
-	void		set_bone(aiMesh* assimp_mesh, Mesh& mesh);
-	void		set_material(aiMesh* assimp_mesh, Mesh& mesh);
+	Model::ptr	process_node(const aiNode* node);
+	Mesh::ptr	process_mesh(const aiNode* node, const aiMesh* assimp_mesh);
+	void		set_vertex(const aiMesh* assimp_mesh, Mesh& mesh);
+	void		set_face(const aiMesh* assimp_mesh, Mesh& mesh);
+	void		set_bone(const aiNode* node, const aiMesh* assimp_mesh, Mesh& mesh);
+	void		set_material(const aiMesh* assimp_mesh, Mesh& mesh);
+	void		add_animation(Mesh& mesh, const aiAnimation* animation);
 	Bone::ptr	create_bone(
-					aiNode*							node,
-					std::map<std::string, aiBone*>	bone_map,
-					Mesh&							mesh,
-					glm::mat4						prev_inverse);
+					const aiNode*							node,
+					std::map<std::string, const aiBone*>	bone_map,
+					Mesh&									mesh);
 	void		load_texture_type(
-					aiMaterial* 		assimp_material,
+					const aiMaterial* 	assimp_material,
 					aiTextureType 		type,
 					const std::string& 	directory,
 					Material&			material);
 
-	std::map<std::string, aiBone*>	init_bone_map(aiMesh* mesh);
+	std::map<std::string, const aiBone*>	init_bone_map(const aiMesh* mesh);
 };
 
 /*##############################################################################

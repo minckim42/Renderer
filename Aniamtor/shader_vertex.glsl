@@ -25,39 +25,43 @@ uniform mat4	weight_matrix[200];
 mat4	set_transform()
 {
 	mat4	final_transform = mat4(0.0);
+	float	w = 0;
 	for (int i = 0 ; i < 4 ; i++)
 	{
 		if (bones0[i] == -1)
-			return final_transform;
+			break;
 		if (bones0[i] >= 200)
 			break;
-		// final_transform *= weight_matrix[bones0[i]];
+		// final_transform += weight_matrix[bones0[i]];
 		// final_transform *= weights0[i] * weight_matrix[bones0[i]];
 		final_transform += weights0[i] * weight_matrix[bones0[i]];
+		w += weights0[i];
 	}
 	for (int i = 0 ; i < 4 ; i++)
 	{
 		if (bones1[i] == -1)
-			return final_transform;
+			break;
 		if (bones1[i] >= 200)
 			break;
-		// final_transform *= weight_matrix[bones1[i]];
+		// final_transform += weight_matrix[bones1[i]];
 		// final_transform *= weights1[i] * weight_matrix[bones1[i]];
 		final_transform += weights1[i] * weight_matrix[bones1[i]];
+		w += weights1[i];
 	}
 	for (int i = 0 ; i < 4 ; i++)
 	{
 		if (bones2[i] == -1)
-			return final_transform;
-		if (bones1[i] >= 200)
 			break;
-		// final_transform *= weight_matrix[bones2[i]];
+		if (bones2[i] >= 200)
+			break;
+		// final_transform += weight_matrix[bones2[i]];
 		// final_transform *= weights2[i] * weight_matrix[bones2[i]];
 		final_transform += weights2[i] * weight_matrix[bones2[i]];
+		w += weights2[i];
 	}
-	if (final_transform == mat4(0))
-		return mat4(1);
-	return final_transform;
+	// final_transform[3][3] = 1;
+	// return final_transform;
+	return final_transform / w;
 }
 
 void main()
@@ -66,8 +70,10 @@ void main()
 
 
 	// mat4	model_final = model;
-	// mat4	model_final = weight_matrix[133] * model;
+	// mat4	model_final = model * weight_matrix[5];
+	// mat4	model_final = model * weight_matrix[bones0[0]];
 	mat4	model_final = model * set_transform();
+	// mat4	model_final = set_transform();
 	gl_Position = projection * (view * (model_final * vec4(position, 1)));
 
 	vs_position = mat3(model_final) * vec3(position);

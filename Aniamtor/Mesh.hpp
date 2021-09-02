@@ -22,6 +22,7 @@ class Mesh
 	public:
 	typedef unsigned int			uint;
 	typedef std::shared_ptr<Mesh>	ptr;
+	typedef std::pair<glm::vec3, glm::vec3>		box;
 
 	/*=========================================
 		Members
@@ -55,9 +56,9 @@ class Mesh
 	void			set_buffer();
 	void			set_tangents();
 	void			set_vertex_tangent(uint a, uint b, uint c);
-
+	box				get_bounding_box();
 
 	private:
-	void			update_bone(uint animation_id, glm::mat4 world, double time);
+	void			update_bone(Shader& shader, uint animation_id, glm::mat4 world, double time);
 	void			init_bone(double time);
 };

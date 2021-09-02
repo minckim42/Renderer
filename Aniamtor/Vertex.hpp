@@ -19,4 +19,5 @@ struct Vertex
 	virtual	~Vertex()=default;
 
 	void		add_weight(uint idx, float weight);
+	uint		get_num_weight();
 };
