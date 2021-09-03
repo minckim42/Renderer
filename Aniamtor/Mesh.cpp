@@ -6,7 +6,7 @@ using namespace std;
 using namespace glm;
 
 Mesh::Mesh():
-	vao(0),vbo(0),ebo(0)
+	vao(0),vbo(0),ebo(0),bone(nullptr)
 {}
 
 Mesh::~Mesh()
@@ -45,11 +45,11 @@ void		Mesh::set_buffer()
 	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, bi_tangent)));
 	
 	glEnableVertexAttribArray(5);
-	glVertexAttribPointer(5, 4, GL_INT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, bones)));
+	glVertexAttribIPointer(5, 4, GL_INT, sizeof(Vertex), (void*)(offsetof(Vertex, bones)));
 	glEnableVertexAttribArray(6);
-	glVertexAttribPointer(6, 4, GL_INT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, bones) + 16));
+	glVertexAttribIPointer(6, 4, GL_INT, sizeof(Vertex), (void*)(offsetof(Vertex, bones) + 16));
 	glEnableVertexAttribArray(7);
-	glVertexAttribPointer(7, 4, GL_INT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, bones) + 32));
+	glVertexAttribIPointer(7, 4, GL_INT, sizeof(Vertex), (void*)(offsetof(Vertex, bones) + 32));
 	
 	glEnableVertexAttribArray(8);
 	glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, weights)));
@@ -64,29 +64,32 @@ void		Mesh::set_buffer()
 	glBindVertexArray(0);
 }
 
-void		Mesh::draw(Shader& shader, mat4 world, double time)
+void		Mesh::draw(Shader& shader, const mat4& world, double time)
 {
-	glBindVertexArray(vao);
-	update_bone(0, world, time);
-	shader.set_uniform("model", world);
-	// shader.set_uniform("weight_matrix", (float*)matrices.data(), matrices.size());
-	// cout << to_string(matrices[1]) << endl;
+	if (bone != nullptr)
+	{
+		update_bone(shader, 0, mat4(1), time);
+		draw(shader, mat4(1));
+	}
+	else
+		draw(shader, world);
+}
+
+void		Mesh::update_bone(Shader& shader, uint animation_id, mat4 world, double time)
+{
+	bone->set_matrix(animation_id, world, time);
 	for (uint i = 0 ; i < matrices.size() ; i++)
 	{
 		shader.set_uniform("weight_matrix[" + to_string(i) + ']', matrices[i]);
-		cout << to_string(matrices[i]) << endl;
+		// cout << to_string(matrices[i]) << endl;
 	}
-	draw_base(shader, world);
-
 }
 
-void		Mesh::update_bone(uint animation_id, mat4 world, double time)
+void		Mesh::draw(Shader& shader, const mat4& world)
 {
-	bone->set_matrix(animation_id, mat4(1.0), time);
-}
-
-void		Mesh::draw_base(Shader& shader, mat4 world)
-{
+	glBindVertexArray(vao);
+	shader.set_uniform("model", world);
+	// shader.set_uniform("model", mat4(1.0));
 	if (material != nullptr)
 	{
 		shader.set_uniform("tex_ambient", 0);
@@ -116,7 +119,7 @@ void		Mesh::draw_base(Shader& shader, mat4 world)
 
 void		Mesh::set_tangents()
 {
-	for (int i = 0 ; i < indices.size() ; i += 3)
+	for (uint i = 0 ; i < indices.size() ; i += 3)
 	{
 		set_vertex_tangent(indices[i], indices[i + 1], indices[i + 2]);
 		set_vertex_tangent(indices[i + 1], indices[i + 2], indices[i]);
@@ -128,6 +131,7 @@ void		Mesh::set_tangents()
 
 void		Mesh::set_vertex_tangent(uint a, uint b, uint c)
 {
+	//cout << a << "   " << b << "   " << c << endl;
 	vec3	t_u = normalize(vertices[b].position - vertices[a].position);
 	vec3	t_v = normalize(vertices[c].position - vertices[a].position);
 	vec3	t_n = normalize(vertices[a].normal);
@@ -142,4 +146,32 @@ void		Mesh::set_vertex_tangent(uint a, uint b, uint c)
 	float	det = determinant(N);
 	vertices[a].tangent = (N[0]) / det;
 	vertices[a].bi_tangent = (N[1]) / det;
+}
+
+
+//------------------------------------------------------------------------------
+
+void		compare_vector(Mesh::box& a, vec3& point)
+{
+	for (uint i = 0 ; i < 3 ; i++)
+	{
+		if (a.first[i] > point[i])
+			a.first[i] = point[i];
+		if (a.second[i] < point[i])
+			a.second[i] = point[i];
+	}
+}
+
+//------------------------------------------------------------------------------
+
+Mesh::box		Mesh::get_bounding_box()
+{
+	Mesh::box	bound = Mesh::box(vec3(INFINITY), vec3(-INFINITY));
+	if (vertices.empty())
+		return bound;
+	for (Vertex& vertex : vertices)
+	{
+		compare_vector(bound, vertex.position);
+	}
+	return bound;
 }

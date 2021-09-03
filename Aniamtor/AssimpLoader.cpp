@@ -13,21 +13,22 @@ using namespace glm;
 AssimpLoader::AssimpLoader(const aiScene* scene, const std::string& directory):
 	scene(scene), directory(directory)
 {
-
 }
 
 //------------------------------------------------------------------------------
 
-Model::ptr	AssimpLoader::process_node(aiNode* node)
+Model::ptr	AssimpLoader::process_node(const aiNode* node)
 {
 	Model::ptr		model = make_shared<Model>();
-
 
 	model->offset = ai_to_glm(node->mTransformation);
 	model->meshes.reserve(node->mNumMeshes);
 	for (uint i = 0 ; i < node->mNumMeshes ; i++)
 	{
-		model->meshes.emplace_back(process_mesh(scene->mMeshes[node->mMeshes[i]]));
+		const aiMesh*	assimp_mesh = scene->mMeshes[node->mMeshes[i]];
+		Mesh::ptr		new_mesh = process_mesh(node, assimp_mesh);
+		if (new_mesh != nullptr)
+		model->meshes.emplace_back(new_mesh);
 	}
 	model->children.reserve(node->mNumChildren);
 	for (uint i = 0 ; i < node->mNumChildren ; i++)
@@ -39,25 +40,37 @@ Model::ptr	AssimpLoader::process_node(aiNode* node)
 
 //------------------------------------------------------------------------------
 
-Mesh::ptr	AssimpLoader::process_mesh(aiMesh* assimp_mesh)
+Mesh::ptr	AssimpLoader::process_mesh(const aiNode* node, const aiMesh* assimp_mesh)
 {
 	Mesh::ptr	mesh = make_shared<Mesh>();
 
 	set_vertex(assimp_mesh, *mesh);
 	set_face(assimp_mesh, *mesh);
+	if (mesh->indices.empty())
+		return nullptr;
+
 	mesh->set_tangents();
 	set_material(assimp_mesh, *mesh);
 	if (assimp_mesh->HasBones())
 	{
-		set_bone(assimp_mesh, *mesh);
+		set_bone(node, assimp_mesh, *mesh);
+	}
+	else
+	{
+		mesh->matrices.emplace_back(1);
 	}
 	mesh->set_buffer();
+
+	// for (uint i = 0 ; i < assimp_mesh->mNumBones ; i++)
+	// {
+	// 	cout << assimp_mesh->mBones[i]->mName.C_Str() << endl;
+	// }
 	return mesh;
 }
 
 //------------------------------------------------------------------------------
 
-void		AssimpLoader::set_vertex(aiMesh* assimp_mesh, Mesh& mesh)
+void		AssimpLoader::set_vertex(const aiMesh* assimp_mesh, Mesh& mesh)
 {
 	mesh.vertices.reserve(assimp_mesh->mNumVertices);
 	for (uint i = 0 ; i < assimp_mesh->mNumVertices ; i++)
@@ -82,118 +95,175 @@ void		AssimpLoader::set_vertex(aiMesh* assimp_mesh, Mesh& mesh)
 
 //------------------------------------------------------------------------------
 
-void		AssimpLoader::set_face(aiMesh* assimp_mesh, Mesh& mesh)
+void		AssimpLoader::set_face(const aiMesh* assimp_mesh, Mesh& mesh)
 {
-	mesh.indices.reserve(assimp_mesh->mNumFaces);
-	for (uint i = 0 ; i < assimp_mesh->mNumFaces ; i++)
+	for (uint i = 0; i < assimp_mesh->mNumFaces; i++)
 	{
-		mesh.indices.push_back(assimp_mesh->mFaces[i].mIndices[0]);
-		mesh.indices.push_back(assimp_mesh->mFaces[i].mIndices[1]);
-		mesh.indices.push_back(assimp_mesh->mFaces[i].mIndices[2]);
+		aiFace	face = assimp_mesh->mFaces[i];
+		if (face.mNumIndices != 3)
+		{
+			continue;
+		}
+		for (uint j = 0; j < face.mNumIndices; j++)
+		{
+			mesh.indices.push_back(face.mIndices[j]);
+		}
+	}
+
+	//mesh.indices.reserve(assimp_mesh->mNumFaces);
+	//for (uint i = 0 ; i < assimp_mesh->mNumFaces ; i++)
+	//{
+	//	aiFace	face = assimp_mesh->mFaces[i];
+	//	for (uint j = 0; j < face.mNumIndices; j++)
+	//	{
+	//		mesh.indices.push_back(face.mIndices[j]);
+	//	}
+
+	//	//mesh.indices.push_back(assimp_mesh->mFaces[i].mIndices[0]);
+	//	//mesh.indices.push_back(assimp_mesh->mFaces[i].mIndices[1]);
+	//	//mesh.indices.push_back(assimp_mesh->mFaces[i].mIndices[2]);
+	//}
+}
+
+//------------------------------------------------------------------------------
+
+AssimpLoader::BoneMap		AssimpLoader::init_bone_map(const aiMesh* mesh)
+{
+	AssimpLoader::BoneMap	bone_map;
+	for (uint i = 0 ; i < mesh->mNumBones ; i++)
+	{
+		bone_map[mesh->mBones[i]->mName.C_Str()] = mesh->mBones[i];
+	}
+	return bone_map;
+}
+
+//------------------------------------------------------------------------------
+
+void		AssimpLoader::set_bone(const aiNode* node, const aiMesh* assimp_mesh, Mesh& mesh)
+{
+	AssimpLoader::BoneMap	bone_map = init_bone_map(assimp_mesh);
+
+	mesh.bone = create_bone(scene->mRootNode, bone_map, mesh, mat4(1));
+	// mesh.bone = create_bone(scene->mRootNode, bone_map, mesh);
+
+	// for each animation
+	for (uint i = 0 ; i < scene->mNumAnimations ; i++)
+	{
+		aiAnimation*	animation = scene->mAnimations[i];
+		add_animation(mesh, animation);
+	}
+}
+
+
+//------------------------------------------------------------------------------
+
+void		AssimpLoader::add_animation(Mesh& mesh, const aiAnimation* animation)
+{
+	mesh.animation_names.emplace_back(animation->mName.C_Str());
+	for (uint j = 0 ; j < animation->mNumChannels ; j++)
+	{
+		aiNodeAnim*	animation_bone = animation->mChannels[j];
+		if (mesh.bone_map.find(animation_bone->mNodeName.C_Str()) == mesh.bone_map.end())
+			continue;
+		Bone::ptr bone = mesh.bone_map[animation_bone->mNodeName.C_Str()];
+		bone->animations.emplace_back();
+		Animation&	key_frame = bone->animations.back();
+		// for each key frame
+		for (uint k = 0 ; k < animation_bone->mNumPositionKeys ; k++)
+		{
+			key_frame.position_keys.emplace_back(ai_to_glm(animation_bone->mPositionKeys[k].mValue));
+			key_frame.position_time.push_back(animation_bone->mPositionKeys[k].mTime);
+		}
+		for (uint k = 0 ; k < animation_bone->mNumRotationKeys ; k++)
+		{
+			key_frame.rotation_keys.emplace_back(ai_to_glm(animation_bone->mRotationKeys[k].mValue));
+			key_frame.rotation_time.push_back(animation_bone->mRotationKeys[k].mTime);
+		}
+		for (uint k = 0 ; k < animation_bone->mNumScalingKeys ; k++)
+		{
+			key_frame.scale_keys.emplace_back(ai_to_glm(animation_bone->mScalingKeys[k].mValue));
+			key_frame.scale_time.push_back(animation_bone->mScalingKeys[k].mTime);
+		}
+		key_frame.create_first_key();
 	}
 }
 
 //------------------------------------------------------------------------------
 
-void		AssimpLoader::set_bone(aiMesh* assimp_mesh, Mesh& mesh)
+mat4		get_transform(const aiNode* node, AssimpLoader::BoneMap& bone_map)
 {
-	map<string, aiBone*>	bone_map = init_bone_map(assimp_mesh);
-	mat4	ident(1.0f);
-
-	aiNode*	armature = scene->mRootNode->mChildren[0];
-	mesh.bone = make_shared<Bone>(mesh.matrices, mat4(1.0));
-	mesh.bone->world_inverse = mat4(1.0);
-	mesh.bone_map.emplace("Armature", mesh.bone);
-	for (uint i = 0 ; i < armature->mNumChildren ; i++)
+	if (bone_map.find(node->mName.C_Str()) == bone_map.end())
 	{
-		if (bone_map.find(armature->mChildren[i]->mName.C_Str()) == bone_map.end())
-			continue ;
-		mesh.bone->children.emplace_back(
-			create_bone(armature->mChildren[i], bone_map, mesh, mat4(1.0)));
+		// cout << node->mName.C_Str() << endl;
+		return mat4(1);
 	}
+	return ai_to_glm(bone_map[node->mName.C_Str()]->mOffsetMatrix);
+}
 
+//------------------------------------------------------------------------------
 
-	// mesh.bone = create_bone(scene->mRootNode->mChildren[0], bone_map, mesh, ident);
-	// for each animation
-	for (uint i = 0 ; i < scene->mNumAnimations ; i++)
-	{
-		aiAnimation*	animation = scene->mAnimations[i];
-		mesh.animation_names.emplace_back(animation->mName.C_Str());
-		// for each bone
-		for (uint j = 0 ; j < animation->mNumChannels ; j++)
-		{
-			aiNodeAnim*	animation_bone = animation->mChannels[j];
-			Bone::ptr bone = mesh.bone_map[animation_bone->mNodeName.C_Str()];
-			bone->animations.emplace_back();
-			// for each key frame
-			for (uint k = 0 ; k < animation_bone->mNumPositionKeys ; k++)
-			{
-				bone->animations.back().position_keys.emplace_back(
-					ai_to_glm(animation_bone->mPositionKeys[k].mValue));
-				bone->animations.back().position_time.push_back(
-					animation_bone->mPositionKeys[k].mTime);
-			}
-			for (uint k = 0 ; k < animation_bone->mNumRotationKeys ; k++)
-			{
-				bone->animations.back().rotation_keys.emplace_back(
-					ai_to_glm(animation_bone->mRotationKeys[k].mValue));
-				bone->animations.back().rotation_time.push_back(
-					animation_bone->mRotationKeys[k].mTime);
-			}
-			for (uint k = 0 ; k < animation_bone->mNumScalingKeys ; k++)
-			{
-				bone->animations.back().scale_keys.emplace_back(
-					ai_to_glm(animation_bone->mScalingKeys[k].mValue));
-				bone->animations.back().scale_time.push_back(
-					animation_bone->mScalingKeys[k].mTime);
-			}
-		}
-	}
+mat4		get_parent_transform(const aiNode* node, AssimpLoader::BoneMap& bone_map)
+{
+	if (bone_map.find(node->mName.C_Str()) == bone_map.end())
+		return mat4(1);
+	if (node->mParent == nullptr)
+		return mat4(1);
+	if (bone_map.find(node->mParent->mName.C_Str()) == bone_map.end())
+		return mat4(1);
+	return ai_to_glm(bone_map[node->mParent->mName.C_Str()]->mOffsetMatrix);
 }
 
 //------------------------------------------------------------------------------
 
 Bone::ptr	AssimpLoader::create_bone(
-				aiNode* 				node,
-				map<string, aiBone*> 	bone_map,
-				Mesh& 					mesh,
-				mat4 					prev_inverse)
+				const aiNode* 				node,
+				AssimpLoader::BoneMap& 		bone_map,
+				Mesh& 						mesh,
+				const mat4&					prev
+			)
 {
-	aiBone*		assimp_bone = bone_map[node->mName.C_Str()];
-	mat4		offset = ai_to_glm(assimp_bone->mOffsetMatrix);
-	Bone::ptr	bone = make_shared<Bone>(mesh.matrices, offset);
-
-	bone->world_inverse = inverse(offset) * prev_inverse;
-	
-	
-	
-	// cout << to_string(prev_inverse) << endl;
-	// cout << to_string(inverse(offset)) << endl;
-	// cout << to_string(bone->world_inverse) << endl;
-	
-	
-	
-	for (uint i = 0 ; i < assimp_bone->mNumWeights ; i++)
+	if (bone_map.find(node->mName.C_Str()) == bone_map.end() && node->mNumChildren == 0)
 	{
-		mesh.vertices[assimp_bone->mWeights[i].mVertexId].add_weight(
-			bone->idx_mat, assimp_bone->mWeights[i].mWeight);
+		// cout << node->mName.C_Str() << endl;
+		return nullptr;
 	}
 
+	mat4		offset = ai_to_glm(node->mTransformation);
+	mat4		world_transform = get_transform(node, bone_map);
+
+	Bone::ptr	bone = make_shared<Bone>(mesh.matrices, offset, world_transform, node->mName.C_Str());
+
+	//add weight
+	if (bone_map.find(node->mName.C_Str()) != bone_map.end())
+	{
+		const aiBone*	assimp_bone = bone_map[node->mName.C_Str()];
+		for (uint i = 0 ; i < assimp_bone->mNumWeights ; i++)
+		{
+			mesh.vertices[assimp_bone->mWeights[i].mVertexId].add_weight(
+				bone->idx_mat, assimp_bone->mWeights[i].mWeight);
+		}
+	}
+
+	// add children
 	bone->children.reserve(node->mNumChildren);
 	for (uint i = 0 ; i < node->mNumChildren ; i++)
 	{
-		if (bone_map.find(node->mChildren[i]->mName.C_Str()) == bone_map.end())
-			continue ;
-		bone->children.emplace_back(
-			create_bone(node->mChildren[i], bone_map, mesh, bone->world_inverse));
+		Bone::ptr	child = // create_bone(node->mChildren[i], bone_map, mesh);
+			create_bone(node->mChildren[i], bone_map, mesh, world_transform);
+			// create_bone(node->mChildren[i], bone_map, mesh, inverse(offset) * world_transform);
+		if (child != nullptr)
+		{
+			bone->children.emplace_back(child);
+		}
 	}
+
 	mesh.bone_map[node->mName.C_Str()] = bone;
 	return bone;
 }
 
 //------------------------------------------------------------------------------
 
-void	AssimpLoader::set_material(aiMesh* assimp_mesh, Mesh& mesh)
+void	AssimpLoader::set_material(const aiMesh* assimp_mesh, Mesh& mesh)
 {
 	string		texture_name = scene->mMaterials[assimp_mesh->mMaterialIndex]->GetName().C_Str();
 	if (Material::container.find(texture_name) != Material::container.end())
@@ -225,23 +295,11 @@ void	AssimpLoader::set_material(aiMesh* assimp_mesh, Mesh& mesh)
 
 //------------------------------------------------------------------------------
 
-std::map<std::string, aiBone*>		AssimpLoader::init_bone_map(aiMesh* mesh)
-{
-	map<string, aiBone*>	bone_map;
-	for (uint i = 0 ; i < mesh->mNumBones ; i++)
-	{
-		bone_map[mesh->mBones[i]->mName.C_Str()] = mesh->mBones[i];
-	}
-	return bone_map;
-}
-
-//------------------------------------------------------------------------------
-
 void	AssimpLoader::load_texture_type(
-			aiMaterial* 	assimp_material,
-			aiTextureType 	type,
-			const string& 	directory,
-			Material&		material
+			const aiMaterial*	assimp_material,
+			aiTextureType 		type,
+			const string& 		directory,
+			Material&			material
 		)
 {
 	unsigned int	num = assimp_material->GetTextureCount(type);
@@ -362,3 +420,18 @@ quat		ai_to_glm(const aiQuaternion& ai_quat)
 {
 	return quat(ai_quat.w, ai_quat.x, ai_quat.y, ai_quat.z);
 }
+
+//------------------------------------------------------------------------------
+
+std::ostream&	operator<<(std::ostream& os, const glm::mat4& x)
+{
+	return os << to_string(x);
+}
+
+//------------------------------------------------------------------------------
+
+std::ostream&	operator<<(std::ostream& os, const glm::vec3& x)
+{
+	return os << to_string(x);
+}
+
