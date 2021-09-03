@@ -50,8 +50,8 @@ class Mesh
 	=========================================*/
 	public:
 	Mesh			copy() const;
-	void			draw(Shader& shader, glm::mat4 world, double time);
-	void			draw_base(Shader& shader, glm::mat4 world);
+	void			draw(Shader& shader, const glm::mat4& world);
+	void			draw(Shader& shader, const glm::mat4& world, double time);
 	bool			is_static_model();
 	void			set_buffer();
 	void			set_tangents();

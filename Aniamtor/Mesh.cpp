@@ -6,7 +6,7 @@ using namespace std;
 using namespace glm;
 
 Mesh::Mesh():
-	vao(0),vbo(0),ebo(0)
+	vao(0),vbo(0),ebo(0),bone(nullptr)
 {}
 
 Mesh::~Mesh()
@@ -64,13 +64,15 @@ void		Mesh::set_buffer()
 	glBindVertexArray(0);
 }
 
-void		Mesh::draw(Shader& shader, mat4 world, double time)
+void		Mesh::draw(Shader& shader, const mat4& world, double time)
 {
-	glBindVertexArray(vao);
-	update_bone(shader, 0, mat4(1), time);
 	if (bone != nullptr)
-		world = mat4(1);
-	draw_base(shader, world);
+	{
+		update_bone(shader, 0, mat4(1), time);
+		draw(shader, mat4(1));
+	}
+	else
+		draw(shader, world);
 }
 
 void		Mesh::update_bone(Shader& shader, uint animation_id, mat4 world, double time)
@@ -83,8 +85,9 @@ void		Mesh::update_bone(Shader& shader, uint animation_id, mat4 world, double ti
 	}
 }
 
-void		Mesh::draw_base(Shader& shader, mat4 world)
+void		Mesh::draw(Shader& shader, const mat4& world)
 {
+	glBindVertexArray(vao);
 	shader.set_uniform("model", world);
 	// shader.set_uniform("model", mat4(1.0));
 	if (material != nullptr)

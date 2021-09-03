@@ -19,8 +19,11 @@ struct Animation
 	std::vector<double>		rotation_time;
 	std::vector<glm::vec3>	scale_keys;
 	std::vector<double>		scale_time;
+	glm::mat4				first_key;
 
 	glm::mat4	interpolate(double time);
+
+	void		create_first_key();
 
 	glm::vec3	interpolate_vector_key(
 					std::vector<glm::vec3>&	keys,

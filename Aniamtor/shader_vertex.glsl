@@ -60,8 +60,8 @@ mat4	set_transform()
 		w += weights2[i];
 	}
 	// final_transform[3][3] = 1;
-	// return final_transform;
-	return final_transform / w;
+	return final_transform;
+	// return final_transform / w;
 }
 
 void main()
@@ -72,7 +72,11 @@ void main()
 	// mat4	model_final = model;
 	// mat4	model_final = model * weight_matrix[5];
 	// mat4	model_final = model * weight_matrix[bones0[0]];
-	mat4	model_final = model * set_transform();
+	mat4	model_final;
+	if (bones0[0] != -1)
+		model_final = model * set_transform();
+	else
+		model_final = model;
 	// mat4	model_final = set_transform();
 	gl_Position = projection * (view * (model_final * vec4(position, 1)));
 

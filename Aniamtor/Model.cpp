@@ -15,7 +15,19 @@ using namespace glm;
 	Constructor
 =========================================*/
 
-void		Model::draw(Shader& shader, glm::mat4 world, double time)
+void		Model::draw(Shader& shader, const glm::mat4& world)
+{
+	for (Mesh::ptr mesh : meshes)
+	{
+		mesh->draw(shader, world * offset);
+	}
+	for (Model::ptr model : children)
+	{
+		model->draw(shader, world * offset);
+	}
+}
+
+void		Model::draw(Shader& shader, const glm::mat4& world, double time)
 {
 	for (Mesh::ptr mesh : meshes)
 	{

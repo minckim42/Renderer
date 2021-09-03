@@ -43,7 +43,8 @@ class Model
 		Methods
 	=========================================*/
 	public:
-	void		draw(Shader& shader, glm::mat4 world, double time);
+	void		draw(Shader& shader, const glm::mat4& world);
+	void		draw(Shader& shader, const glm::mat4& world, double time);
 	void		add_mesh(Mesh::ptr mesh);
 	void		add_child(ptr x);
 	box			get_bounding_box();
