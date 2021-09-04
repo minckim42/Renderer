@@ -203,8 +203,8 @@ void				WindowGlfw::loop()
 	while (!glfwWindowShouldClose(_window) && work())
 	{
 		glfwSwapBuffers(_window);
-		glfwPollEvents();
 		clear_callback_flag();
+		glfwPollEvents();
 	}
 	terminate();
 }
@@ -216,6 +216,10 @@ void				WindowGlfw::terminate()
 
 //------------------------------------------------------------------------------
 
+void				WindowGlfw::hide_mouse()
+{
+	glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
 
 /*##############################################################################
 

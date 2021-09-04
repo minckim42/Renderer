@@ -94,6 +94,7 @@ class WindowGlfw
 	virtual void		loop();
 	virtual bool		work();
 	virtual void		terminate();
+	void				hide_mouse();
 };
 /*##############################################################################
 
