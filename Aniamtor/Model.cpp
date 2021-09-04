@@ -27,16 +27,16 @@ void		Model::draw(Shader& shader, const glm::mat4& world)
 	}
 }
 
-void		Model::draw(Shader& shader, const glm::mat4& world, double time)
+void		Model::draw(Shader& shader, const glm::mat4& world, double time, uint animation)
 {
 	for (Mesh::ptr mesh : meshes)
 	{
 		// mesh->draw(shader, world, time);
-		mesh->draw(shader, world * offset, time);
+		mesh->draw(shader, world * offset, time, animation);
 	}
 	for (Model::ptr model : children)
 	{
-		model->draw(shader, world * offset, time);
+		model->draw(shader, world * offset, time, animation);
 	}
 }
 

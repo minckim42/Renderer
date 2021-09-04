@@ -143,7 +143,12 @@ void		AssimpLoader::set_bone(const aiNode* node, const aiMesh* assimp_mesh, Mesh
 {
 	AssimpLoader::BoneMap	bone_map = init_bone_map(assimp_mesh);
 
-	mesh.bone = create_bone(scene->mRootNode, bone_map, mesh, mat4(1));
+	mesh.bone = create_bone(
+					scene->mRootNode,
+					bone_map,
+					mesh,
+					mat4(1)
+				);
 	// mesh.bone = create_bone(scene->mRootNode, bone_map, mesh);
 
 	// for each animation
@@ -194,8 +199,10 @@ mat4		get_transform(const aiNode* node, AssimpLoader::BoneMap& bone_map)
 {
 	if (bone_map.find(node->mName.C_Str()) == bone_map.end())
 	{
-		// cout << node->mName.C_Str() << endl;
-		return mat4(1);
+		// cout << ai_to_glm(node->mTransformation) << endl;
+		// return mat4(1);
+		// cout << __func__ << endl;
+		return inverse(ai_to_glm(node->mTransformation));
 	}
 	return ai_to_glm(bone_map[node->mName.C_Str()]->mOffsetMatrix);
 }
@@ -204,13 +211,20 @@ mat4		get_transform(const aiNode* node, AssimpLoader::BoneMap& bone_map)
 
 mat4		get_parent_transform(const aiNode* node, AssimpLoader::BoneMap& bone_map)
 {
-	if (bone_map.find(node->mName.C_Str()) == bone_map.end())
-		return mat4(1);
-	if (node->mParent == nullptr)
-		return mat4(1);
-	if (bone_map.find(node->mParent->mName.C_Str()) == bone_map.end())
-		return mat4(1);
-	return ai_to_glm(bone_map[node->mParent->mName.C_Str()]->mOffsetMatrix);
+	// if (bone_map.find(node->mName.C_Str()) == bone_map.end())
+	// 	return mat4(1);
+	// 	return inverse(ai_to_glm(node->mTransformation));
+	// if (node->mParent == nullptr)
+	// 	return mat4(1);
+	// 	return inverse(ai_to_glm(node->mTransformation));
+	// if (bone_map.find(node->mParent->mName.C_Str()) == bone_map.end())
+	// 	return mat4(1);
+	// 	return inverse(ai_to_glm(node->mParent->mTransformation));
+	// return ai_to_glm(bone_map[node->mParent->mName.C_Str()]->mOffsetMatrix);
+	if (node->mParent != nullptr)
+		return get_transform(node->mParent, bone_map);
+	// cout << __func__ << endl;
+	return get_transform(node, bone_map);
 }
 
 //------------------------------------------------------------------------------
@@ -222,16 +236,30 @@ Bone::ptr	AssimpLoader::create_bone(
 				const mat4&					prev
 			)
 {
-	if (bone_map.find(node->mName.C_Str()) == bone_map.end() && node->mNumChildren == 0)
-	{
-		// cout << node->mName.C_Str() << endl;
-		return nullptr;
-	}
+	// if (bone_map.find(node->mName.C_Str()) == bone_map.end() && node->mNumChildren == 0)
+	// {
+	// 	// cout << node->mName.C_Str() << endl;
+	// 	return nullptr;
+	// }
 
-	mat4		offset = ai_to_glm(node->mTransformation);
+	// mat4		offset = ai_to_glm(node->mTransformation);
+	// mat4		world_transform = inverse(offset) * prev;
+	mat4		offset = get_parent_transform(node, bone_map) * inverse(get_transform(node, bone_map));
 	mat4		world_transform = get_transform(node, bone_map);
 
 	Bone::ptr	bone = make_shared<Bone>(mesh.matrices, offset, world_transform, node->mName.C_Str());
+
+
+	if (bone_map.find(node->mName.C_Str()) == bone_map.end())
+		cout << "Bone (X) ";
+	else
+		cout << "Bone (O) ";
+	cout << node->mName.C_Str() << endl;
+	cout << ai_to_glm(node->mTransformation) << endl;
+	cout << get_parent_transform(node, bone_map) * inverse(get_transform(node, bone_map)) << endl;
+	cout << get_transform(node, bone_map) << endl;
+	cout << inverse(ai_to_glm(node->mTransformation)) * prev << endl;
+
 
 	//add weight
 	if (bone_map.find(node->mName.C_Str()) != bone_map.end())
@@ -249,7 +277,7 @@ Bone::ptr	AssimpLoader::create_bone(
 	for (uint i = 0 ; i < node->mNumChildren ; i++)
 	{
 		Bone::ptr	child = // create_bone(node->mChildren[i], bone_map, mesh);
-			create_bone(node->mChildren[i], bone_map, mesh, world_transform);
+			create_bone(node->mChildren[i], bone_map, mesh, inverse(ai_to_glm(node->mTransformation)) * prev);
 			// create_bone(node->mChildren[i], bone_map, mesh, inverse(offset) * world_transform);
 		if (child != nullptr)
 		{

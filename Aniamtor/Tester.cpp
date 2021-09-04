@@ -146,7 +146,7 @@ class Window : public WindowGlfw
 		shader->set_uniform("view", camera->view);
 		shader->set_uniform("projection", camera->projection);
 		light->draw(*shader);
-		model->draw(*shader, mat4(1), time);
+		model->draw(*shader, mat4(1), time, 0);
 		// model->draw(*shader, mat4(1));
 		// cout << time << endl;
 		return true;
@@ -164,8 +164,8 @@ int		main()
 		Material::init_default_texture_normal();
 
 		string		file_name = 
-			// "../../sources/walking_man/rp_nathan_animated_003_walking.fbx";
-			"../../sources/dragon/Dragon_Baked_Actions_fbx_7.4_binary.fbx";
+			"../../sources/walking_man/rp_nathan_animated_003_walking.fbx";
+			// "../../sources/dragon/Dragon_Baked_Actions_fbx_7.4_binary.fbx";
 			// "../../sources/backpack/backpack.obj";
 		
 		Model::ptr	model = assimp_loader(file_name);

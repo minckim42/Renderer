@@ -23,3 +23,17 @@ class Controlable: public Object
 	
 	void	move_process();
 };
+
+class State
+{
+	public:
+	virtual State*	state();
+};
+
+
+class StateMove: public State
+{
+	public:
+	State*	state();
+};
+

@@ -54,7 +54,7 @@ mat4	Animation::interpolate(double time)
 	// return rotate_mat * scale_mat * position_mat;
 	// return scale_mat * rotate_mat * position_mat;
 	// return scale_mat * position_mat * rotate_mat;
-
+	
 
 
 	// mat4	scale_mat = scale(mat4(1), scaling / scale_keys[0]);
@@ -67,13 +67,12 @@ mat4	Animation::interpolate(double time)
 	// return scale_mat * rotate_mat * position_mat;
 	// return scale_mat * position_mat * rotate_mat;
 
-
 	mat4	transform = translate(position) * scale(scaling) * toMat4(rotation);
 	// mat4	transform = translate(position) * scale(scaling);
 	// return transform * first_key;
 	// mat4	transform = toMat4(rotation) * scale(scaling) *  translate(position);
 	return first_key * transform;
-	return transform;
+	// return transform;
 
 }
 

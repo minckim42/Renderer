@@ -51,7 +51,7 @@ class Mesh
 	public:
 	Mesh			copy() const;
 	void			draw(Shader& shader, const glm::mat4& world);
-	void			draw(Shader& shader, const glm::mat4& world, double time);
+	void			draw(Shader& shader, const glm::mat4& world, double time, uint animation);
 	bool			is_static_model();
 	void			set_buffer();
 	void			set_tangents();
@@ -59,6 +59,6 @@ class Mesh
 	box				get_bounding_box();
 
 	private:
-	void			update_bone(Shader& shader, uint animation_id, glm::mat4 world, double time);
+	void			update_bone(Shader& shader, glm::mat4 world, double time, uint animation_id);
 	void			init_bone(double time);
 };

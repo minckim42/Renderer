@@ -64,18 +64,20 @@ void		Mesh::set_buffer()
 	glBindVertexArray(0);
 }
 
-void		Mesh::draw(Shader& shader, const mat4& world, double time)
+void		Mesh::draw(Shader& shader, const mat4& world, double time, uint animation)
 {
 	if (bone != nullptr)
 	{
-		update_bone(shader, 0, mat4(1), time);
-		draw(shader, mat4(1));
+		update_bone(shader, mat4(1), time, animation);
+		// draw(shader, mat4(1));
+		// update_bone(shader, world, time, animation);
+		draw(shader, world);
 	}
 	else
 		draw(shader, world);
 }
 
-void		Mesh::update_bone(Shader& shader, uint animation_id, mat4 world, double time)
+void		Mesh::update_bone(Shader& shader, mat4 world, double time, uint animation_id)
 {
 	bone->set_matrix(animation_id, world, time);
 	for (uint i = 0 ; i < matrices.size() ; i++)
