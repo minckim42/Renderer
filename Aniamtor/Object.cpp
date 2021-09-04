@@ -14,24 +14,25 @@ using namespace std;
 =======================================*/
 
 Object::Object():
-matrix(1.0f)
+matrix(1.0f), up(0, 0, 1)
 {}
 
 //------------------------------------------------------------------------------
 
 Object::Object(const mat4& mat):
-matrix(mat)
+matrix(mat), up(mat[2])
 {}
 
 //------------------------------------------------------------------------------
 
-Object::Object(vec3 position, vec3 x, vec3 z)
+Object::Object(vec3 position, vec3 x, vec3 z):
+up(normalize(z))
 {
 	// direction = normalize(direction);
-	z = normalize(z);
-	vec3	y = normalize(cross(z, x));
-	x = cross(y, z);
-	matrix = mat4(vec4(x, 0), vec4(y, 0), vec4(z, 0), vec4(position, 1));
+	vec3	front = normalize(x);
+	vec3	left = normalize(cross(up, front));
+	front = cross(left, up);
+	matrix = mat4(vec4(front, 0), vec4(left, 0), vec4(up, 0), vec4(position, 1));
 }
 
 /*=======================================
@@ -75,22 +76,6 @@ Object&			Object::pitch(float rad)
 	vec3	position = get_position();
 	set_position(vec3(0, 0, 0));
 	matrix = rotate(-rad, get_left()) * matrix;
-	set_position(position);
-	return *this;
-}
-
-//------------------------------------------------------------------------------
-
-Object&			Object::pitch(float rad, vec3 up)
-{
-	vec3		axis = cross(up, get_direction());
-	if (axis == vec3(0, 0, 0))
-	{
-		axis = get_left();
-	}
-	vec3	position = get_position();
-	set_position(vec3(0, 0, 0));
-	matrix = rotate(-rad, axis) * matrix;
 	set_position(position);
 	return *this;
 }

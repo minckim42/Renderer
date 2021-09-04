@@ -21,8 +21,7 @@ Object(
 fovy(pi<float>() / 3), 
 aspect(16.f/9), 
 z_far(2000), 
-z_near(1),
-up(0, 0, 1)
+z_near(1)
 {
 	update_projection();
 	update_view();
@@ -40,7 +39,6 @@ Camera::Camera(
 	float		z_near
 ):
 Object(position, direction, up),
-up(up),
 fovy(fovy), 
 aspect(aspect), 
 z_far(z_far), 

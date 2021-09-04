@@ -17,6 +17,7 @@ class Object
 	
 	public:
 	glm::mat4			matrix;
+	glm::vec3			up;
 
 	/*=======================================
 		Constructor
@@ -40,7 +41,7 @@ class Object
 	virtual Object&		move_left(float len);
 	virtual Object&		move_up(float len);
 	virtual Object&		pitch(float rad);
-	virtual Object&		pitch(float rad, glm::vec3 up);
+	// virtual Object&		pitch(float rad, glm::vec3 up);
 	virtual Object&		yaw(float rad);
 	virtual Object&		yaw(float rad, glm::vec3 up);
 

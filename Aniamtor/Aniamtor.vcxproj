@@ -149,6 +149,7 @@
     <ClInclude Include="AssimpLoader.hpp" />
     <ClInclude Include="Bone.hpp" />
     <ClInclude Include="Camera.hpp" />
+    <ClInclude Include="Controlable.hpp" />
     <ClInclude Include="Light.hpp" />
     <ClInclude Include="Material.hpp" />
     <ClInclude Include="Mesh.hpp" />
@@ -164,6 +165,7 @@
     <ClCompile Include="AssimpLoader.cpp" />
     <ClCompile Include="Bone.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Controlable.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
