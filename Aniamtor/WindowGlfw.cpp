@@ -1,35 +1,45 @@
 #include "WindowGlfw.hpp"
 #include <iostream>
 
-/*##############################################################################
-	WindowGlfw
-##############################################################################*/
-
 using namespace std;
 
-/* constructor */	WindowGlfw::WindowGlfw():
+/*##############################################################################
+
+	WindowGlfw
+
+##############################################################################*/
+int				WindowGlfw::_width = 1920;
+int				WindowGlfw::_height = 1080;
+double			WindowGlfw::_mouse_x = WindowGlfw::_width / 2;
+double			WindowGlfw::_mouse_y = WindowGlfw::_height / 2;
+bool			WindowGlfw::_frame_called = false;
+bool			WindowGlfw::_mouse_called = false;
+
+
+//------------------------------------------------------------------------------
+
+WindowGlfw::WindowGlfw():
 _window(0),
 _name("nonamed"),
-_width(1280),
-_height(720),
 _monitor(0),
 _share(0)
 {}
 
 //------------------------------------------------------------------------------
 
-/* constructor */	WindowGlfw::WindowGlfw(int width, int height, const std::string& name):
+WindowGlfw::WindowGlfw(int width, int height, const std::string& name):
 _window(0),
 _name(name),
-_width(width),
-_height(height),
 _monitor(0),
 _share(0)
-{}
+{
+	_width = width;
+	_height = height;
+}
 
 //------------------------------------------------------------------------------
 
-/* destructor */	WindowGlfw::~WindowGlfw()
+WindowGlfw::~WindowGlfw()
 {
 	if (_window)
 		glfwTerminate();
@@ -136,16 +146,40 @@ bool				WindowGlfw::is_init() const
 
 //------------------------------------------------------------------------------
 
+bool				WindowGlfw::is_frame_called() const
+{
+	return _frame_called;
+}
+
+//------------------------------------------------------------------------------
+
+bool				WindowGlfw::is_mouse_called() const
+{
+	return _mouse_called;
+}
+
+//------------------------------------------------------------------------------
+
 void				WindowGlfw::check_init(const string& function) const
 {
 	if (is_init())
 		throw string("GLFW: Already initialized: ") + function;
 }
 
+//------------------------------------------------------------------------------
+
 void				WindowGlfw::check_init(const char* function) const
 {
 	if (is_init())
 		throw string("GLFW: Already initialized: ") + function;
+}
+
+//------------------------------------------------------------------------------
+
+void				WindowGlfw::clear_callback_flag()
+{
+	_frame_called = false;
+	_mouse_called = false;
 }
 
 //------------------------------------------------------------------------------
@@ -164,11 +198,13 @@ bool				WindowGlfw::work()
 
 void				WindowGlfw::loop()
 {
-	glfwSetFramebufferSizeCallback(_window, frame_resize);
+	glfwSetFramebufferSizeCallback(_window, callback_frame);
+	glfwSetCursorPosCallback(_window, callback_mouse);
 	while (!glfwWindowShouldClose(_window) && work())
 	{
 		glfwSwapBuffers(_window);
 		glfwPollEvents();
+		clear_callback_flag();
 	}
 	terminate();
 }
@@ -180,13 +216,33 @@ void				WindowGlfw::terminate()
 
 //------------------------------------------------------------------------------
 
+
+/*##############################################################################
+
+	Non member function
+
+##############################################################################*/
+
 void			init_glad()
 {
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 		throw string("GLAD: Failed to initialize GLAD");
 }
 
-void			frame_resize(GLFWwindow* window, int width, int height)
+//------------------------------------------------------------------------------
+
+void			callback_frame(GLFWwindow* window, int width, int height)
 {
-	glViewport(0, 0, width, height);
+	WindowGlfw::_width = width;
+	WindowGlfw::_height = height;
+	WindowGlfw::_frame_called = true;
+}
+
+//------------------------------------------------------------------------------
+
+void			callback_mouse(GLFWwindow* window, double x, double y)
+{
+	WindowGlfw::_mouse_x = x;
+	WindowGlfw::_mouse_y = y;
+	WindowGlfw::_mouse_called = true;
 }

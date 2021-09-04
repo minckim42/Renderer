@@ -18,8 +18,11 @@ enum class opengl_profile
 	core = GLFW_OPENGL_CORE_PROFILE
 };
 
+
 class WindowGlfw
 {
+	friend void		callback_frame(GLFWwindow* window, int width, int height);
+	friend void		callback_mouse(GLFWwindow* window, double x, double y);
 	/*=========================================
 		Types
 	=========================================*/
@@ -32,20 +35,24 @@ class WindowGlfw
 	=========================================*/
 
 	protected:
-	GLFWwindow*			_window;
-	std::string			_name;
-	int					_width;
-	int					_height;
-	GLFWmonitor*		_monitor;
-	GLFWwindow*			_share;
+	GLFWwindow*				_window;
+	std::string				_name;
+	GLFWmonitor*			_monitor;
+	GLFWwindow*				_share;
+	static int				_width;
+	static int				_height;
+	static double			_mouse_x;
+	static double			_mouse_y;
+	static bool				_frame_called;
+	static bool				_mouse_called;
 
 	/*=========================================
 		Constructor & Destructor
 	=========================================*/
 
 	public:
-	/* constructor */	WindowGlfw();
-	/* constructor */	WindowGlfw(int width, int height, const std::string& name);
+	WindowGlfw();
+	WindowGlfw(int width, int height, const std::string& name);
 	virtual				~WindowGlfw();
 
 	/*=========================================
@@ -69,8 +76,9 @@ class WindowGlfw
 	const std::string&	get_name() const;
 	int					get_width() const;
 	int					get_height() const;
-
 	bool				is_init() const;
+	bool				is_frame_called() const;
+	bool				is_mouse_called() const;
 
 	/*=========================================
 		Other methods
@@ -79,6 +87,7 @@ class WindowGlfw
 	private:
 	void				check_init(const std::string& function) const;
 	void				check_init(const char* function) const;
+	void				clear_callback_flag();
 
 	public:
 	virtual void		prepare();
@@ -86,10 +95,12 @@ class WindowGlfw
 	virtual bool		work();
 	virtual void		terminate();
 };
+/*##############################################################################
 
-/*=========================================
 	Non member function
-=========================================*/
+
+##############################################################################*/
 
 void					init_glad();
-void					frame_resize(GLFWwindow* window, int width, int height);
+void					callback_frame(GLFWwindow* window, int width, int height);
+void					callback_mouse(GLFWwindow* window, double x, double y);
