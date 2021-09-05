@@ -60,6 +60,9 @@
     <ClInclude Include="Controlable.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="World.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bone.cpp">
@@ -111,6 +114,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

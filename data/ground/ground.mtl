@@ -1,0 +1,14 @@
+# Rhino
+newmtl ground
+Ka 0.4000 0.4000 0.4000
+Kd 0.6660 0.6660 0.6660
+Ks 0.6660 0.6660 0.6660
+Tf 0.0000 0.0000 0.0000
+d 1.0000
+Ns 0.0000
+map_Kd   rustic-stone-texture-background.jpg
+map_Ks   rustic-stone-texture-background.jpg
+map_Bump   rustic-stone-texture-normal.jpg
+# map_Bump stone-floor-texture_normal.png
+# map_Kd   df.png
+# map_Bump nr.bmp

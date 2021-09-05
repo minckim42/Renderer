@@ -73,6 +73,10 @@ Object&			Object::move_up(float len)
 
 Object&			Object::pitch(float rad)
 {
+	float		angle_cos = dot(get_direction(), up);
+	float		angle_sin = sqrt(1 - angle_cos * angle_cos);
+	if (angle_sin <= sin(rad) - 0.03)
+		return *this;
 	vec3	position = get_position();
 	set_position(vec3(0, 0, 0));
 	matrix = rotate(-rad, get_left()) * matrix;

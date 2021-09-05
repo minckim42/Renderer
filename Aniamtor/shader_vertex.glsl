@@ -14,7 +14,7 @@ layout (location = 10) in vec4	weights2;
 
 out vec2	vs_tex_coords;
 out vec3	vs_position;
-// out vec3	vs_normal;
+out vec3	vs_normal;
 out mat3	mat_face;
 
 uniform mat4	model;

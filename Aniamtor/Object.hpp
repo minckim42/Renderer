@@ -2,6 +2,7 @@
 #include <glm/glm.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/ext.hpp>
+#include <memory>
 
 /*##############################################################################
 
@@ -12,9 +13,14 @@
 class Object
 {
 	/*=========================================
+		Types
+	=========================================*/
+	public:
+	typedef std::shared_ptr<Object>		ptr;
+
+	/*=========================================
 		Members
 	=========================================*/
-	
 	public:
 	glm::mat4			matrix;
 	glm::vec3			up;
@@ -22,6 +28,7 @@ class Object
 	/*=======================================
 		Constructor
 	=======================================*/
+	public:
 	Object();
 	Object(const glm::mat4& mat);
 	Object(glm::vec3 position, glm::vec3 x,	glm::vec3 z); // z is prior to x

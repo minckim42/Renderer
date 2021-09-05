@@ -21,7 +21,7 @@ Model::ptr	AssimpLoader::process_node(const aiNode* node)
 {
 	Model::ptr		model = make_shared<Model>();
 
-	model->offset = ai_to_glm(node->mTransformation);
+	model->matrix = ai_to_glm(node->mTransformation);
 	model->meshes.reserve(node->mNumMeshes);
 	for (uint i = 0 ; i < node->mNumMeshes ; i++)
 	{
@@ -242,23 +242,23 @@ Bone::ptr	AssimpLoader::create_bone(
 	// 	return nullptr;
 	// }
 
-	// mat4		offset = ai_to_glm(node->mTransformation);
-	// mat4		world_transform = inverse(offset) * prev;
-	mat4		offset = get_parent_transform(node, bone_map) * inverse(get_transform(node, bone_map));
+	// mat4		matrix = ai_to_glm(node->mTransformation);
+	// mat4		world_transform = inverse(matrix) * prev;
+	mat4		matrix = get_parent_transform(node, bone_map) * inverse(get_transform(node, bone_map));
 	mat4		world_transform = get_transform(node, bone_map);
 
-	Bone::ptr	bone = make_shared<Bone>(mesh.matrices, offset, world_transform, node->mName.C_Str());
+	Bone::ptr	bone = make_shared<Bone>(mesh.matrices, matrix, world_transform, node->mName.C_Str());
 
 
-	if (bone_map.find(node->mName.C_Str()) == bone_map.end())
-		cout << "Bone (X) ";
-	else
-		cout << "Bone (O) ";
-	cout << node->mName.C_Str() << endl;
-	cout << ai_to_glm(node->mTransformation) << endl;
-	cout << get_parent_transform(node, bone_map) * inverse(get_transform(node, bone_map)) << endl;
-	cout << get_transform(node, bone_map) << endl;
-	cout << inverse(ai_to_glm(node->mTransformation)) * prev << endl;
+	// if (bone_map.find(node->mName.C_Str()) == bone_map.end())
+	// 	cout << "Bone (X) ";
+	// else
+	// 	cout << "Bone (O) ";
+	// cout << node->mName.C_Str() << endl;
+	// cout << ai_to_glm(node->mTransformation) << endl;
+	// cout << get_parent_transform(node, bone_map) * inverse(get_transform(node, bone_map)) << endl;
+	// cout << get_transform(node, bone_map) << endl;
+	// cout << inverse(ai_to_glm(node->mTransformation)) * prev << endl;
 
 
 	//add weight
@@ -278,7 +278,7 @@ Bone::ptr	AssimpLoader::create_bone(
 	{
 		Bone::ptr	child = // create_bone(node->mChildren[i], bone_map, mesh);
 			create_bone(node->mChildren[i], bone_map, mesh, inverse(ai_to_glm(node->mTransformation)) * prev);
-			// create_bone(node->mChildren[i], bone_map, mesh, inverse(offset) * world_transform);
+			// create_bone(node->mChildren[i], bone_map, mesh, inverse(matrix) * world_transform);
 		if (child != nullptr)
 		{
 			bone->children.emplace_back(child);
@@ -315,6 +315,7 @@ void	AssimpLoader::set_material(const aiMesh* assimp_mesh, Mesh& mesh)
 		scene->mMaterials[assimp_mesh->mMaterialIndex]->Get(AI_MATKEY_COLOR_SPECULAR, color);
 		material.param.ks = ai_to_glm(color);
 	
+		material.name = texture_name;
 		Material::container[texture_name] = material;
 		mesh.material = &Material::container[texture_name];
 

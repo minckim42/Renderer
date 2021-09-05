@@ -19,11 +19,11 @@ void		Model::draw(Shader& shader, const glm::mat4& world)
 {
 	for (Mesh::ptr mesh : meshes)
 	{
-		mesh->draw(shader, world * offset);
+		mesh->draw(shader, world * matrix);
 	}
 	for (Model::ptr model : children)
 	{
-		model->draw(shader, world * offset);
+		model->draw(shader, world * matrix);
 	}
 }
 
@@ -32,11 +32,11 @@ void		Model::draw(Shader& shader, const glm::mat4& world, double time, uint anim
 	for (Mesh::ptr mesh : meshes)
 	{
 		// mesh->draw(shader, world, time);
-		mesh->draw(shader, world * offset, time, animation);
+		mesh->draw(shader, world * matrix, time, animation);
 	}
 	for (Model::ptr model : children)
 	{
-		model->draw(shader, world * offset, time, animation);
+		model->draw(shader, world * matrix, time, animation);
 	}
 }
 
@@ -75,7 +75,7 @@ std::pair<glm::vec3, glm::vec3>		Model::get_bounding_box()
 	{
 		compare_box(bound, child->get_bounding_box());
 	}
-	bound.first = vec3(offset * vec4(bound.first, 1));
-	bound.second = vec3(offset * vec4(bound.second, 1));
+	bound.first = vec3(matrix * vec4(bound.first, 1));
+	bound.second = vec3(matrix * vec4(bound.second, 1));
 	return bound;
 }

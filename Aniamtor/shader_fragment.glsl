@@ -3,7 +3,7 @@ out vec4	FragColor;
 in vec2		vs_tex_coords;
 in vec3		vs_position;
 in mat3		mat_face;
-// in vec3		vs_normal;
+in vec3		vs_normal;
 
 uniform vec3		eye;
 uniform vec3		light_position;
@@ -25,6 +25,7 @@ void main()
 	vec3	normal_tr = normalize(mat_face * ((texture(tex_normal, vs_tex_coords).xyz * 2 - 1)));
 	// vec3	normal_tr = normalize(mat_face * vec3(0, 0, 1));
 	// vec3	normal_tr = mat_face * vec3(0, 1, 0);
+	// vec3	normal_tr = mat_face * vec3(0, 1, 0);
 
 	vec3	light_dir = light_position - vs_position;
 	vec3	light_dir_norm = normalize(light_dir);
@@ -44,6 +45,6 @@ void main()
 	FragColor = vec4((ambient + diffuse + specular) * strength, 1);
 	
 	// FragColor = vec4(normal_tr, 1);
-	// FragColor = texture(tex_normal, vs_tex_coords);
+	// FragColor = texture(tex_diffuse, vs_tex_coords);
 	// FragColor = vec4(1, 1, 1, 1);
 }

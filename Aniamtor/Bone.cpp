@@ -30,6 +30,7 @@ void	Bone::set_matrix(uint animation_id, const mat4& prev, double time)
 	else
 	{
 		matrix() = prev * offset * animations[animation_id].interpolate(time);
+		// matrix() = prev * animations[animation_id].interpolate(time) * offset;
 	}
 	for (Bone::ptr  child : children)
 	{

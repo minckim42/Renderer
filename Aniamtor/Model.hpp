@@ -6,6 +6,7 @@
 #include "Mesh.hpp"
 #include "Material.hpp"
 #include "Shader.hpp"
+#include "Object.hpp"
 
 /*##############################################################################
 
@@ -13,7 +14,7 @@
 
 ##############################################################################*/
 
-class Model
+class Model: public Object
 {
 	/*=========================================
 		Types
@@ -30,7 +31,7 @@ class Model
 	public:
 	std::vector<Mesh::ptr>	meshes;
 	std::vector<ptr>		children;
-	glm::mat4				offset;
+	// glm::mat4				offset;
 
 	/*=========================================
 		Constructor

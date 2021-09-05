@@ -6,6 +6,7 @@
 #include "Camera.hpp"
 #include "Shader.hpp"
 #include "Light.hpp"
+#include "Controlable.hpp"
 #include <iostream>
 #include <chrono>
 
@@ -14,10 +15,13 @@ using namespace glm;
 
 typedef unsigned int		uint;
 
-// #define UP_Z
+#define UP_Z
+#define FILE_DRAGON "../data/dragon/Dragon_Baked_Actions_fbx_7.4_binary.fbx"
+#define FILE_GROUND "../data/ground/ground.obj"
+#define FILE_BUILDING "../data/ground/ground.obj"
 
 #ifdef UP_Z
-# define FRONT vec3(0, 1, 0)
+# define FRONT vec3(1, 0, 0)
 # define UP vec3(0, 0, 1)
 #else
 # define FRONT vec3(0, 0, -1)
@@ -32,121 +36,122 @@ class Window : public WindowGlfw
 	Light*				light;
 	float				speed;
 	float				rot_speed;
-	float				model_size;
+	// float				model_size;
 	float				time;
-	Model::ptr			model;
+	// Model::ptr			model;
+	Controlable*		dragon;
+	Model::ptr			ground;
 	
 	chrono::system_clock::time_point	prev;
 
-	Window(): WindowGlfw(1920, 1080, "Test")
-	{
-		init();
-		init_glad();
-	}
 	Window(int w, int h, const string& name): 
 		WindowGlfw(w, h, name),
 		speed(3000),
 		rot_speed(1),
-		model_size(1),
+		// model_size(1),
 		time(0)
 	{
 		init();
 		init_glad();
 		prev = chrono::system_clock::now();
 	}
-	void 			key_process()
-	{
-		chrono::duration<float>	interval(chrono::system_clock::now() - prev);
+	// void 			key_process()
+	// {
+	// 	chrono::duration<float>	interval(chrono::system_clock::now() - prev);
 
-		float	len = model_size * 0.001 * interval.count() * 0.0005 * speed;
-		float	rad = 0.0009 * interval.count() * rot_speed;
-		if (glfwGetKey(get_window(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		{
-			glfwSetWindowShouldClose(get_window(), true);
-		}
-		if (glfwGetKey(get_window(), GLFW_KEY_W) == GLFW_PRESS)
-		{
-			camera->move_forward(len);
-		}
-		if (glfwGetKey(get_window(), GLFW_KEY_S) == GLFW_PRESS)
-		{
-			camera->move_forward(-len);
-		}
-		if (glfwGetKey(get_window(), GLFW_KEY_A) == GLFW_PRESS)
-		{
-			camera->move_left(len);
-		}
-		if (glfwGetKey(get_window(), GLFW_KEY_D) == GLFW_PRESS)
-		{
-			camera->move_left(-len);
-		}
-		if (glfwGetKey(get_window(), GLFW_KEY_LEFT) == GLFW_PRESS)
-		{
-			camera->yaw(rad, camera->up);
-		}
-		if (glfwGetKey(get_window(), GLFW_KEY_RIGHT) == GLFW_PRESS)
-		{
-			camera->yaw(-rad, camera->up);
-		}
-		if (glfwGetKey(get_window(), GLFW_KEY_UP) == GLFW_PRESS)
-		{
-			camera->pitch(rad);
-		}
-		if (glfwGetKey(get_window(), GLFW_KEY_DOWN) == GLFW_PRESS)
-		{
-			camera->pitch(-rad);
-		}
-		if (glfwGetKey(get_window(), GLFW_KEY_SPACE) == GLFW_PRESS)
-		{
-			camera->move(UP * len);
-		}
-		if (glfwGetKey(get_window(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-		{
-			camera->move(UP * -len);
-		}
-		if (glfwGetKey(get_window(), GLFW_KEY_LEFT_BRACKET) == GLFW_PRESS)
-		{
-			speed /= 1.1;
-			if (speed < 0.0000001)
-				speed = 0.0000001;
-			cout << speed << endl;
-		}
-		if (glfwGetKey(get_window(), GLFW_KEY_RIGHT_BRACKET) == GLFW_PRESS)
-		{
-			speed *= 1.1;
-			cout << speed << endl;
-		}
-		if (glfwGetKey(get_window(), GLFW_KEY_O) == GLFW_PRESS)
-		{
-			rot_speed /= 1.1;
-			if (speed < 0.0000001)
-				speed = 0.0000001;
-			cout << speed << endl;
-		}
-		if (glfwGetKey(get_window(), GLFW_KEY_P) == GLFW_PRESS)
-		{
-			rot_speed *= 1.1;
-			cout << speed << endl;
-		}
-		if (glfwGetKey(get_window(), GLFW_KEY_R) == GLFW_PRESS)
-		{
-			time = 0;
-		}
-		camera->update_view();
-	}
+	// 	float	len = model_size * 0.001 * interval.count() * 0.0005 * speed;
+	// 	float	rad = 0.0009 * interval.count() * rot_speed;
+	// 	if (glfwGetKey(get_window(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	// 	{
+	// 		glfwSetWindowShouldClose(get_window(), true);
+	// 	}
+	// 	if (glfwGetKey(get_window(), GLFW_KEY_W) == GLFW_PRESS)
+	// 	{
+	// 		camera->move_forward(len);
+	// 	}
+	// 	if (glfwGetKey(get_window(), GLFW_KEY_S) == GLFW_PRESS)
+	// 	{
+	// 		camera->move_forward(-len);
+	// 	}
+	// 	if (glfwGetKey(get_window(), GLFW_KEY_A) == GLFW_PRESS)
+	// 	{
+	// 		camera->move_left(len);
+	// 	}
+	// 	if (glfwGetKey(get_window(), GLFW_KEY_D) == GLFW_PRESS)
+	// 	{
+	// 		camera->move_left(-len);
+	// 	}
+	// 	if (glfwGetKey(get_window(), GLFW_KEY_LEFT) == GLFW_PRESS)
+	// 	{
+	// 		camera->yaw(rad, camera->up);
+	// 	}
+	// 	if (glfwGetKey(get_window(), GLFW_KEY_RIGHT) == GLFW_PRESS)
+	// 	{
+	// 		camera->yaw(-rad, camera->up);
+	// 	}
+	// 	if (glfwGetKey(get_window(), GLFW_KEY_UP) == GLFW_PRESS)
+	// 	{
+	// 		camera->pitch(rad);
+	// 	}
+	// 	if (glfwGetKey(get_window(), GLFW_KEY_DOWN) == GLFW_PRESS)
+	// 	{
+	// 		camera->pitch(-rad);
+	// 	}
+	// 	if (glfwGetKey(get_window(), GLFW_KEY_SPACE) == GLFW_PRESS)
+	// 	{
+	// 		camera->move(UP * len);
+	// 	}
+	// 	if (glfwGetKey(get_window(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+	// 	{
+	// 		camera->move(UP * -len);
+	// 	}
+	// 	if (glfwGetKey(get_window(), GLFW_KEY_LEFT_BRACKET) == GLFW_PRESS)
+	// 	{
+	// 		speed /= 1.1;
+	// 		if (speed < 0.0000001)
+	// 			speed = 0.0000001;
+	// 		cout << speed << endl;
+	// 	}
+	// 	if (glfwGetKey(get_window(), GLFW_KEY_RIGHT_BRACKET) == GLFW_PRESS)
+	// 	{
+	// 		speed *= 1.1;
+	// 		cout << speed << endl;
+	// 	}
+	// 	if (glfwGetKey(get_window(), GLFW_KEY_O) == GLFW_PRESS)
+	// 	{
+	// 		rot_speed /= 1.1;
+	// 		if (speed < 0.0000001)
+	// 			speed = 0.0000001;
+	// 		cout << speed << endl;
+	// 	}
+	// 	if (glfwGetKey(get_window(), GLFW_KEY_P) == GLFW_PRESS)
+	// 	{
+	// 		rot_speed *= 1.1;
+	// 		cout << speed << endl;
+	// 	}
+	// 	if (glfwGetKey(get_window(), GLFW_KEY_R) == GLFW_PRESS)
+	// 	{
+	// 		time = 0;
+	// 	}
+	// 	camera->update_view();
+	// }
 
 	bool		work()
 	{
 		time += 5;
 		glClearColor(0.2, 0.2, 0.2, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		key_process();
+		// key_process();
 
-		shader->set_uniform("eye", camera->get_position());
-		shader->set_uniform("view", camera->view);
-		shader->set_uniform("projection", camera->projection);
+		// shader->set_uniform("eye", camera->get_position());
+		// shader->set_uniform("view", camera->view);
+		// shader->set_uniform("projection", camera->projection);
 		light->draw(*shader);
-		model->draw(*shader, mat4(1), time, 0);
+		dragon->process();
+		ground->draw(*shader, mat4(1));
+		// model->draw(*shader, mat4(1), time, 0);
+		// model->draw(*shader, mat4(1), time, 1);
+		// model->draw(*shader, mat4(1), time, 2);
 		// model->draw(*shader, mat4(1));
 		// cout << time << endl;
 		return true;
@@ -163,19 +168,24 @@ int		main()
 		Material::init_default_texture();
 		Material::init_default_texture_normal();
 
-		string		file_name = 
-			"../../sources/walking_man/rp_nathan_animated_003_walking.fbx";
+		// string		file_name = 
+			// "../../sources/walking_man/rp_nathan_animated_003_walking.fbx";
 			// "../../sources/dragon/Dragon_Baked_Actions_fbx_7.4_binary.fbx";
 			// "../../sources/backpack/backpack.obj";
 		
-		Model::ptr	model = assimp_loader(file_name);
+		// Model::ptr	model = assimp_loader(file_name);
 		
 		Shader		shader;
 		shader.compile_shader("shader_vertex.glsl", shader_type::vertex);
 		shader.compile_shader("shader_fragment.glsl", shader_type::fragment);
 		shader.link_shader_program();
 
-		Model::box	bound = model->get_bounding_box();
+		// Model::box	bound = model->get_bounding_box();
+
+		Controlable		dragon(window, assimp_loader(FILE_DRAGON));
+		Model::ptr		ground = assimp_loader(FILE_GROUND);
+
+		Model::box	bound = dragon.model->get_bounding_box();
 		
 		
 
@@ -207,12 +217,17 @@ int		main()
 		light.set_position((-FRONT + UP) * model_size * 3);
 		light.strength = model_size * 4.5;
 
-		window.model = model;
-		window.model_size = model_size;
+		dragon.shader = &shader;
+		dragon.camera = &camera;
+
+		window.dragon = &dragon;
+		// window.model_size = model_size;
 		window.shader = &shader;
 		window.light = &light;
-		window.camera = &camera;
+		// window.camera = &camera;
 
+		window.ground = ground;
+		window.hide_mouse();
 		shader.use();
 		glEnable(GL_DEPTH_TEST);
 		window.loop();
