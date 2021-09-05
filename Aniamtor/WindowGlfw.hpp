@@ -79,6 +79,9 @@ class WindowGlfw
 	bool				is_init() const;
 	bool				is_frame_called() const;
 	bool				is_mouse_called() const;
+	void				get_mouse_motion(int& x, int& y) const;
+	void				get_mouse_position(int& x, int& y) const;
+	void				get_frame_size(int& w, int& h) const;
 
 	/*=========================================
 		Other methods

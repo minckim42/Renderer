@@ -160,6 +160,34 @@ bool				WindowGlfw::is_mouse_called() const
 
 //------------------------------------------------------------------------------
 
+void				WindowGlfw::get_mouse_motion(int& x, int& y) const
+{
+	static int		prev_x = WindowGlfw::_mouse_x;
+	static int		prev_y = WindowGlfw::_mouse_y;
+	x = _mouse_x - prev_x;
+	y = _mouse_y - prev_y;
+	prev_x = _mouse_x;
+	prev_y = _mouse_y;
+}
+
+//------------------------------------------------------------------------------
+
+void				WindowGlfw::get_mouse_position(int& x, int& y) const
+{
+	x = _mouse_x;
+	y = _mouse_y;
+}
+
+//------------------------------------------------------------------------------
+
+void				WindowGlfw::get_frame_size(int& w, int& h) const
+{
+	w = _width;
+	h = _height;
+}
+
+//------------------------------------------------------------------------------
+
 void				WindowGlfw::check_init(const string& function) const
 {
 	if (is_init())
