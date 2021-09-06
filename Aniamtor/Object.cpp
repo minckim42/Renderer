@@ -90,7 +90,7 @@ Object&			Object::yaw(float rad)
 {
 	vec3	position = get_position();
 	set_position(vec3(0, 0, 0));
-	matrix = rotate(rad, get_up()) * matrix;
+	matrix = rotate(rad, vec3(matrix[2])) * matrix;
 	set_position(position);
 	return *this;
 }
@@ -129,7 +129,7 @@ vec3			Object::get_left() const
 
 //------------------------------------------------------------------------------
 
-vec3			Object::get_up() const
+vec3			Object::get_z() const
 {
 	return vec3(matrix[2]);
 }

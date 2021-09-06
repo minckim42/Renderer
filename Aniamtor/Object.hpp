@@ -55,7 +55,7 @@ class Object
 	glm::vec3			get_position() const;
 	glm::vec3			get_direction() const;
 	glm::vec3			get_left() const;
-	glm::vec3			get_up() const;
+	glm::vec3			get_z() const;
 
 	void				set_identity();
 	void				set_position(const glm::vec3& v);

@@ -33,9 +33,6 @@
     <ClInclude Include="..\Renderer\Light.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\Renderer\Material.hpp">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Material.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>

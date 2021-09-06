@@ -144,7 +144,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Renderer\Light.hpp" />
-    <ClInclude Include="..\Renderer\Material.hpp" />
     <ClInclude Include="Animation.hpp" />
     <ClInclude Include="AssimpLoader.hpp" />
     <ClInclude Include="Bone.hpp" />
