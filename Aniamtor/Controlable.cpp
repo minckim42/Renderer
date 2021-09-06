@@ -16,7 +16,7 @@ using namespace	glm;
 #define TIME_FLY_END	4435.f
 #define TIME_LAND_START	TIME_FLY_END
 #define TIME_LAND_END	9000.f
-#define TIME_STOP_END	3000.f
+#define TIME_STOP_END	28000.f
 
 #define MINIMUM_HEIGHT	1000.f
 
@@ -342,12 +342,11 @@ Controlable::Controlable(WindowGlfw& window, Model::ptr model):
 	window(window), model(init_model(model)), speed(1), sensitivity(0.02)
 {
 	init_state();
-	init_model();
 	state = State::stop;
 }
 
 Controlable::Controlable(WindowGlfw& window, Model::ptr model, float move_speed):
-	window(window), model(init_model(model)), speed(speed), sensitivity(0.02)
+	window(window), model(init_model(model)), speed(move_speed), sensitivity(0.02)
 {
 	init_state();
 	state = State::stop;
@@ -358,6 +357,8 @@ Controlable::~Controlable()
 	delete_state();
 }
 
+//==============================================================================
+
 void		Controlable::init_state()
 {
 	State::walk = new StateWalk(this);
@@ -366,6 +367,8 @@ void		Controlable::init_state()
 	State::depart = new StateDepart(this);
 	State::land = new StateLand(this);
 }
+
+//==============================================================================
 
 void		Controlable::delete_state()
 {
@@ -376,10 +379,12 @@ void		Controlable::delete_state()
 	delete State::land;
 }
 
+//==============================================================================
+
 void		Controlable::process()
 {
 	camera->matrix = matrix;
-	camera->move_forward(-10000);
+	camera->move_forward(-13000);
 	camera->move_up(3000);
 	camera->update_view();
 	shader->set_uniform("eye", camera->get_position());
@@ -393,6 +398,8 @@ void		Controlable::process()
 	}
 	// cout << to_string(matrix) << endl;
 }
+
+//==============================================================================
 
 Model::ptr	Controlable::init_model(Model::ptr model_ptr)
 {
@@ -408,98 +415,4 @@ Model::ptr	Controlable::init_model(Model::ptr model_ptr)
 	return root;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-// void		Controlable::key_process()
-// {
-// 	GLFWwindow*	win_ptr = window.get_window();
-// 	TimePoint	now = chrono::system_clock::now();
-// 	Duration	duration(now - prev);
-	
-// 	float		len = speed * 1000 * duration.count();
-// 	float		rad = sensitivity * duration.count();
-
-// 	if (glfwGetKey(win_ptr, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-// 	{
-// 		glfwSetWindowShouldClose(win_ptr, true); // shut down
-// 	}
-// 	if (glfwGetKey(win_ptr, GLFW_KEY_W) == GLFW_PRESS)
-// 	{
-// 		move_forward(len);
-// 	}
-// 	if (glfwGetKey(win_ptr, GLFW_KEY_S) == GLFW_PRESS)
-// 	{
-// 		move_forward(-len);
-// 	}
-// 	if (glfwGetKey(win_ptr, GLFW_KEY_A) == GLFW_PRESS)
-// 	{
-// 		move_left(len);
-// 	}
-// 	if (glfwGetKey(win_ptr, GLFW_KEY_D) == GLFW_PRESS)
-// 	{
-// 		move_left(-len);
-// 	}
-// 	if (glfwGetKey(win_ptr, GLFW_KEY_LEFT) == GLFW_PRESS)
-// 	{
-// 		yaw(rad, u-p);
-// 	}
-// 	if (glfwGetKey(win_ptr, GLFW_KEY_RIGHT) == GLFW_PRESS)
-// 	{
-// 		yaw(-rad, -up);
-// 	}
-// 	if (glfwGetKey(win_ptr, GLFW_KEY_UP) == GLFW_PRESS)
-// 	{
-// 		pitch(rad);
-// 	}
-// 	if (glfwGetKey(win_ptr, GLFW_KEY_DOWN) == GLFW_PRESS)
-// 	{
-// 		pitch(-rad);
-// 	}
-// 	if (glfwGetKey(win_ptr, GLFW_KEY_SPACE) == GLFW_PRESS)
-// 	{
-// 		move(up * len);
-// 	}
-// 	if (glfwGetKey(win_ptr, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-// 	{
-// 		move(up * -len);
-// 	}
-// 	if (glfwGetKey(win_ptr, GLFW_KEY_LEFT_BRACKET) == GLFW_PRESS)
-// 	{
-// 		speed /= 1.1;
-// 		if (speed < 0.0000001)
-// 			speed = 0.0000001;
-// 		cout << "Speed decrease: " << speed << endl;
-// 	}
-// 	if (glfwGetKey(win_ptr, GLFW_KEY_RIGHT_BRACKET) == GLFW_PRESS)
-// 	{
-// 		speed *= 1.1;
-// 		cout << "Speed increase: " << speed << endl;
-// 	}
-// 	if (glfwGetKey(win_ptr, GLFW_KEY_O) == GLFW_PRESS)
-// 	{
-// 		sensitivity /= 1.1;
-// 		if (speed < 0.0000001)
-// 			speed = 0.0000001;
-// 		cout << "Rotate sensitivy decrease: " << speed << endl;
-// 	}
-// 	if (glfwGetKey(win_ptr, GLFW_KEY_P) == GLFW_PRESS)
-// 	{
-// 		sensitivity *= 1.1;
-// 		cout << "Rotate sensitivy increase: " << speed << endl;
-// 	}
-// 	// if (glfwGetKey(win_ptr, GLFW_KEY_R) == GLFW_PRESS)
-// 	// {
-// 	// 	time = 0;
-// 	// }
-
-
-// }
+//==============================================================================

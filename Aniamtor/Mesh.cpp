@@ -113,6 +113,7 @@ void		Mesh::draw(Shader& shader, const mat4& world)
 		shader.set_uniform("ka", material->param.ka);
 		shader.set_uniform("ks", material->param.ks);
 		shader.set_uniform("kd", material->param.kd);
+		shader.set_uniform("transparent", material->param.d);
 	}
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 }

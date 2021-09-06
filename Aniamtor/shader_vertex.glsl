@@ -14,7 +14,6 @@ layout (location = 10) in vec4	weights2;
 
 out vec2	vs_tex_coords;
 out vec3	vs_position;
-out vec3	vs_normal;
 out mat3	mat_face;
 
 uniform mat4	model;
@@ -32,8 +31,6 @@ mat4	set_transform()
 			break;
 		if (bones0[i] >= 200)
 			break;
-		// final_transform += weight_matrix[bones0[i]];
-		// final_transform *= weights0[i] * weight_matrix[bones0[i]];
 		final_transform += weights0[i] * weight_matrix[bones0[i]];
 		w += weights0[i];
 	}
@@ -43,8 +40,6 @@ mat4	set_transform()
 			break;
 		if (bones1[i] >= 200)
 			break;
-		// final_transform += weight_matrix[bones1[i]];
-		// final_transform *= weights1[i] * weight_matrix[bones1[i]];
 		final_transform += weights1[i] * weight_matrix[bones1[i]];
 		w += weights1[i];
 	}
@@ -54,8 +49,6 @@ mat4	set_transform()
 			break;
 		if (bones2[i] >= 200)
 			break;
-		// final_transform += weight_matrix[bones2[i]];
-		// final_transform *= weights2[i] * weight_matrix[bones2[i]];
 		final_transform += weights2[i] * weight_matrix[bones2[i]];
 		w += weights2[i];
 	}
@@ -69,23 +62,13 @@ void main()
 	vs_tex_coords = tex_coord;
 
 
-	// mat4	model_final = model;
-	// mat4	model_final = model * weight_matrix[5];
-	// mat4	model_final = model * weight_matrix[bones0[0]];
 	mat4	model_final;
 	if (bones0[0] != -1)
 		model_final = model * set_transform();
 	else
 		model_final = model;
-	// mat4	model_final = set_transform();
+
 	gl_Position = projection * (view * (model_final * vec4(position, 1)));
-
 	vs_position = mat3(model_final) * vec3(position);
-
 	mat_face = mat3(model_final) * mat3(tan_x, tan_y, normal);
-	
-	// vs_normal = normalize( mat3(model_final) * normal);
-	
-	// gl_Position = vec4(normalize(gl_Position.xyz), 1);
-	// gl_Position = vec4(normalize(position), 1);
 }

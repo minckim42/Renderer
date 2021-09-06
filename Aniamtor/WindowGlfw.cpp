@@ -35,6 +35,8 @@ _share(0)
 {
 	_width = width;
 	_height = height;
+	init();
+	init_glad();
 }
 
 //------------------------------------------------------------------------------
@@ -244,7 +246,7 @@ void				WindowGlfw::terminate()
 
 //------------------------------------------------------------------------------
 
-void				WindowGlfw::hide_mouse()
+void				WindowGlfw::hide_cursor()
 {
 	glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }

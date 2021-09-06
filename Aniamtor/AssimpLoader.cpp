@@ -314,6 +314,9 @@ void	AssimpLoader::set_material(const aiMesh* assimp_mesh, Mesh& mesh)
 		material.param.kd = ai_to_glm(color);
 		scene->mMaterials[assimp_mesh->mMaterialIndex]->Get(AI_MATKEY_COLOR_SPECULAR, color);
 		material.param.ks = ai_to_glm(color);
+		float			d;
+		scene->mMaterials[assimp_mesh->mMaterialIndex]->Get(AI_MATKEY_COLOR_TRANSPARENT, d);
+		material.param.d = 1 - d;
 	
 		material.name = texture_name;
 		Material::container[texture_name] = material;

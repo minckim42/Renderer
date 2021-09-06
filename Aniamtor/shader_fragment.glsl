@@ -3,7 +3,6 @@ out vec4	FragColor;
 in vec2		vs_tex_coords;
 in vec3		vs_position;
 in mat3		mat_face;
-in vec3		vs_normal;
 
 uniform vec3		eye;
 uniform vec3		light_position;
@@ -17,6 +16,7 @@ uniform sampler2D	tex_normal;
 uniform vec3		ka;
 uniform vec3		kd;
 uniform vec3		ks;
+uniform float		transparent;
 
 
 
@@ -42,7 +42,7 @@ void main()
 	vec3	specular = (texture(tex_specular, vs_tex_coords).xyz * ks)
 						 * light_color * max(0, dot(eye_dir_norm, flec_dir_norm));
 
-	FragColor = vec4((ambient + diffuse + specular) * strength, 1);
+	FragColor = vec4((ambient + diffuse + specular) * strength, transparent);
 	
 	// FragColor = vec4(normal_tr, 1);
 	// FragColor = texture(tex_diffuse, vs_tex_coords);

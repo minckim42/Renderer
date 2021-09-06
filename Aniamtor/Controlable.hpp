@@ -85,8 +85,12 @@ class Controlable: public Object
 	/*=========================================
 		Type
 	=========================================*/
+	private:
 	typedef std::chrono::system_clock::time_point	TimePoint;
 	typedef std::chrono::duration<double>			Duration;
+
+	public:
+	typedef std::shared_ptr<Controlable>			ptr;
 	/*=========================================
 		Members
 	=========================================*/
