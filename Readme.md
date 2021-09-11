@@ -78,18 +78,18 @@ OpenGL로 구현된 범용 렌더링 엔진입니다.
 이름 그대로 모형을 담는 그릇입니다. 모형에 대한 데이터 자체보다는 트리 구조를 구성하는 노드에 해당합니다. 모델은 또다른 모델을 자식으로 가질 수 있습니다.
 ```Object```를 상속합니다.
 
+## 멤버 타입
+```c++
+typedef std::shared_ptr<Model>			ptr;
+typedef std::pair<glm::vec3, glm::vec3>	box;
+```
+
 ## 멤버 변수
 ### children
 ```Model```의 공유포인터 타입을 저장하는 컨테이너
 
 ### meshes
 ```Mesh```의 공유포인터 타입을 저장하는 컨테이너
-
-## 멤버 타입
-```c++
-typedef std::shared_ptr<Model>			ptr;
-typedef std::pair<glm::vec3, glm::vec3>	box;
-```
 
 ## 생성자
 ### 기본생성자
@@ -128,12 +128,12 @@ typedef std::pair<glm::vec3, glm::vec3>	box;
 ## 관련된 타입
 ### shader_type
 셰이더 종류 입니다.
-```vertex``` : 버텍스 셰이더 타입
-```tess_control``` : 테셀레이션 컨트롤 셰이더 타입
-```tess_evaluation``` : 테셀레이션 평가 셰이더 타입
-```geometry``` : 지오메트리 셰이더 타입
-```fragment``` : 프래그먼트 셰이더 타입
-```compute``` : 컴퓨트 셰이더 타입
+- ```vertex``` : 버텍스 셰이더 타입
+- ```tess_control``` : 테셀레이션 컨트롤 셰이더 타입
+- ```tess_evaluation``` : 테셀레이션 평가 셰이더 타입
+- ```geometry``` : 지오메트리 셰이더 타입
+- ```fragment``` : 프래그먼트 셰이더 타입
+- ```compute``` : 컴퓨트 셰이더 타입
 
 
 ## 생성자
