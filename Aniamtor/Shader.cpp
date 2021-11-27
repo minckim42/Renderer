@@ -132,10 +132,10 @@ void			Shader::check_shader(GLuint shader, shader_type type)
 	switch (type)
 	{
 	case shader_type::vertex:
-		shader_name = "vertex shader";
+		shader_name = "../Shader/vertex shader";
 		break;
 	case shader_type::fragment:
-		shader_name = "fragment shader";
+		shader_name = "../Shader/fragment shader";
 		break;
 	default:
 		break;

@@ -145,10 +145,10 @@
   <ItemGroup>
     <ClInclude Include="..\Renderer\Light.hpp" />
     <ClInclude Include="Animation.hpp" />
+    <ClInclude Include="Animator.hpp" />
     <ClInclude Include="AssimpLoader.hpp" />
     <ClInclude Include="Bone.hpp" />
     <ClInclude Include="Camera.hpp" />
-    <ClInclude Include="Controlable.hpp" />
     <ClInclude Include="Light.hpp" />
     <ClInclude Include="Material.hpp" />
     <ClInclude Include="Mesh.hpp" />
@@ -157,17 +157,14 @@
     <ClInclude Include="Shader.hpp" />
     <ClInclude Include="Vertex.hpp" />
     <ClInclude Include="WindowGlfw.hpp" />
-    <ClInclude Include="World.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\glad.c" />
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AssimpLoader.cpp" />
     <ClCompile Include="Bone.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Controlable.cpp" />
+    <ClCompile Include="glad.c" />
     <ClCompile Include="Light.cpp" />
-    <ClCompile Include="Main.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
@@ -177,7 +174,6 @@
     <ClCompile Include="Tester.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="WindowGlfw.cpp" />
-    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

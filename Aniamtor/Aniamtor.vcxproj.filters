@@ -54,10 +54,7 @@
     <ClInclude Include="Light.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Controlable.hpp">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="World.hpp">
+    <ClInclude Include="Animator.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -89,9 +86,6 @@
     <ClCompile Include="Tester.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\glad.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Shader.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -107,13 +101,7 @@
     <ClCompile Include="Light.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Controlable.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="World.cpp">
+    <ClCompile Include="glad.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
